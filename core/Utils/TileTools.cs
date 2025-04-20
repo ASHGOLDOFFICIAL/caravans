@@ -11,6 +11,8 @@ public static class TileTools
 
     public static Point2D NearestTile(Vector2 realPosition)
     {
-        return new Point2D((int)realPosition.X, (int)realPosition.Y);
+        var tileX = (int)(realPosition.X + 0.5);
+        var tileY = (int)(realPosition.Y + 0.5);
+        return new Point2D(tileX, tileY);
     }
 }
