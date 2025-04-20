@@ -1,0 +1,7 @@
+# user specific
+.idea/
+*.DotSettings.user
+
+# Godot 4+ specific ignores
+.godot/
+/android/

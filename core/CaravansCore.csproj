@@ -1,0 +1,16 @@
+﻿<Project Sdk="Godot.NET.Sdk/4.4.1">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>CaravansCore</RootNamespace>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AStarNavigator" Version="1.0.63"/>
+        <PackageReference Include="Udun.FastNoiseLite" Version="1.0.1"/>
+    </ItemGroup>
+
+</Project>

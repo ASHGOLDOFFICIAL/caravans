@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://b1t6yvlv6xsd2"]
+
+[ext_resource type="Script" uid="uid://mkcg4xifw0xj" path="res://Entities/Caravan/Caravan.cs" id="1_3x5kc"]
+[ext_resource type="Material" uid="uid://35xmgd4pv3q8" path="res://Shaders/OutlineShader.tres" id="2_jb2tv"]
+[ext_resource type="Texture2D" uid="uid://dshjcmt6aqt40" path="res://Entities/Caravan/Assets/sprite.png" id="3_m5m7y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f74k3"]
+size = Vector2(16, 15)
+
+[node name="Caravan" type="CharacterBody2D"]
+script = ExtResource("1_3x5kc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = ExtResource("2_jb2tv")
+texture = ExtResource("3_m5m7y")
+region_rect = Rect2(-1, -1, 18, 18)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_f74k3")

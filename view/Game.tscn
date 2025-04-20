@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://fgmp5a1jcf0n"]
+
+[ext_resource type="Script" uid="uid://djcdctpxyx803" path="res://Game.cs" id="1_8ykrl"]
+[ext_resource type="PackedScene" uid="uid://cv3m8vy2s48o4" path="res://Levels/Level.tscn" id="2_u44n3"]
+[ext_resource type="PackedScene" uid="uid://caru6hegepq5u" path="res://Entities/Player/Player.tscn" id="4_t88pq"]
+[ext_resource type="PackedScene" uid="uid://crd637q00ed0x" path="res://UI/InGamePlayerUi.tscn" id="5_r0x5m"]
+[ext_resource type="Script" uid="uid://cqmyny8ashksj" path="res://InputController.cs" id="5_t88pq"]
+
+[node name="Game" type="Node" node_paths=PackedStringArray("_playerUi", "_inputController", "_levelScene")]
+script = ExtResource("1_8ykrl")
+_playerUi = NodePath("InGamePlayerUi")
+_inputController = NodePath("InputController")
+_levelScene = NodePath("Level")
+
+[node name="Level" parent="." node_paths=PackedStringArray("_player") instance=ExtResource("2_u44n3")]
+_player = NodePath("Player")
+
+[node name="Player" parent="Level" instance=ExtResource("4_t88pq")]
+
+[node name="Camera2D" type="Camera2D" parent="Level/Player"]
+zoom = Vector2(4, 4)
+
+[node name="InputController" type="Node2D" parent="." node_paths=PackedStringArray("_level", "_player")]
+script = ExtResource("5_t88pq")
+_level = NodePath("../Level")
+_player = NodePath("../Level/Player")
+
+[node name="InGamePlayerUi" parent="." instance=ExtResource("5_r0x5m")]

@@ -1,0 +1,27 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaravansCore", "core\CaravansCore.csproj", "{01DB899A-1A1D-434D-966B-B885116D82BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaravansView", "view\CaravansView.csproj", "{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01DB899A-1A1D-434D-966B-B885116D82BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01DB899A-1A1D-434D-966B-B885116D82BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01DB899A-1A1D-434D-966B-B885116D82BD}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{01DB899A-1A1D-434D-966B-B885116D82BD}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{01DB899A-1A1D-434D-966B-B885116D82BD}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{01DB899A-1A1D-434D-966B-B885116D82BD}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{4A1AA103-D670-4B4A-ABD7-61DE6EC672E6}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal
