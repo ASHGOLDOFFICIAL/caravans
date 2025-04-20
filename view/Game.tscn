@@ -6,11 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://crd637q00ed0x" path="res://UI/InGamePlayerUi.tscn" id="5_r0x5m"]
 [ext_resource type="Script" uid="uid://cqmyny8ashksj" path="res://InputController.cs" id="5_t88pq"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("_playerUi", "_inputController", "_levelScene")]
+[node name="Game" type="Node" node_paths=PackedStringArray("_inputController", "_levelScene", "_playerUi")]
 script = ExtResource("1_8ykrl")
-_playerUi = NodePath("InGamePlayerUi")
 _inputController = NodePath("InputController")
 _levelScene = NodePath("Level")
+_playerUi = NodePath("InGamePlayerUi")
 
 [node name="Level" parent="." node_paths=PackedStringArray("_player") instance=ExtResource("2_u44n3")]
 _player = NodePath("Player")
@@ -18,7 +18,7 @@ _player = NodePath("Player")
 [node name="Player" parent="Level" instance=ExtResource("4_t88pq")]
 
 [node name="Camera2D" type="Camera2D" parent="Level/Player"]
-zoom = Vector2(4, 4)
+zoom = Vector2(2, 2)
 
 [node name="InputController" type="Node2D" parent="." node_paths=PackedStringArray("_level", "_player")]
 script = ExtResource("5_t88pq")
