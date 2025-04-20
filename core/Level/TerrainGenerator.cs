@@ -5,7 +5,6 @@ namespace CaravansCore.Level;
 
 internal class TerrainGenerator
 {
-    private const int PathNodes = 4;
     private readonly FastNoiseLite _noise = new();
     private readonly Random _random;
 
@@ -20,7 +19,9 @@ internal class TerrainGenerator
     {
         Layout level = new(width, height);
         GenerateTerrain(level);
-        GeneratePaths(level);
+        var cities = ChooseCityLocations(level);
+        GeneratePaths(level, cities);
+        PlaceCities(level, cities);
         return level;
     }
 
@@ -39,19 +40,25 @@ internal class TerrainGenerator
         }
     }
 
-    private void GeneratePaths(Layout level)
+    private HashSet<Point2D> ChooseCityLocations(Layout level)
     {
-        List<Point2D> nodes = [];
+        var citiesAmount = _random.Next(0, 6);
+        HashSet<Point2D> nodes = [];
+        foreach (var _ in Enumerable.Range(0, citiesAmount))
+        {
+            var x = _random.Next(0, level.Width);
+            var y = _random.Next(0, level.Height);
+            nodes.Add(new Point2D(x, y));
+        }
+        return nodes;
+    }
 
-        nodes.AddRange(from _ in Enumerable.Range(0, PathNodes)
-            select _random.Next(0, level.Width)
-            into x
-            let y = _random.Next(0, level.Height)
-            select new Point2D(x, y));
-
-        for (var i = 0; i < nodes.Count; ++i)
-        for (var j = i + 1; j < nodes.Count; ++j)
-            ConnectWithPath(level, nodes[i], nodes[j]);
+    private void GeneratePaths(Layout level, HashSet<Point2D> nodes)
+    {
+        var nodeList = nodes.ToList();
+        for (var i = 0; i < nodeList.Count; ++i)
+        for (var j = i + 1; j < nodeList.Count; ++j)
+            ConnectWithPath(level, nodeList[i], nodeList[j]);
     }
 
     private static void ConnectWithPath(Layout level, Point2D source, Point2D dest)
@@ -70,5 +77,11 @@ internal class TerrainGenerator
                 : new Point2D(0, (int)(y / absY));
             current += vec;
         }
+    }
+
+    private static void PlaceCities(Layout level, HashSet<Point2D> nodes)
+    {
+        foreach (var node in nodes)
+            level.PlaceTerrain(TerrainId.City, node);
     }
 }

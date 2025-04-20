@@ -7,11 +7,24 @@ using CaravansCore.Utils;
 
 namespace CaravansCore.Entities.AI;
 
-internal class ExceptPathBlockedProvider(Layout level) : IBlockedProvider
+internal class NoBlockedProvider(Layout level) : IBlockedProvider
 {
     public bool IsBlocked(Tile coord)
     {
-        return level.GetTerrain(Converters.TileToPoint(coord)) != TerrainId.Path;
+        return false;
+    }
+}
+
+internal class OnlyAllowedBlockedProvider(Layout level, HashSet<TerrainId> allowed) : IBlockedProvider
+{
+    private bool IsAllowed(Tile coord)
+    {
+        return allowed.Any(terrain => level.GetTerrain(Converters.ToPoint2D(coord)) == terrain);
+    }
+    
+    public bool IsBlocked(Tile coord)
+    {
+        return !IsAllowed(coord);
     }
 }
 
@@ -32,36 +45,40 @@ internal class AdjacentTilesProvider : INeighborProvider
     }
 }
 
-internal class CaravanPathfinder : IPathfinder
-{
+internal class Pathfinder(HashSet<TerrainId>? allowed) : IPathfinder {
     public IEnumerable<Point2D> FindPath(Layout level, Point2D start, Point2D end)
     {
-        var from = Converters.Point2DToTile(start);
-        var to = Converters.Point2DToTile(end);
+        var from = Converters.ToTile(start);
+        var to = Converters.ToTile(end);
 
+        IBlockedProvider blocker = allowed is null
+            ? new NoBlockedProvider(level)
+            : new OnlyAllowedBlockedProvider(level, allowed);
+        
         var navigator = new TileNavigator(
-            new ExceptPathBlockedProvider(level),
+            blocker,
             new AdjacentTilesProvider(),
             new PythagorasAlgorithm(),
             new ManhattanHeuristicAlgorithm()
         );
+
         return ToPoint2DPath(navigator.Navigate(from, to));
     }
 
     private static IEnumerable<Point2D> ToPoint2DPath(IEnumerable<Tile> tiles)
     {
-        return tiles.Select(Converters.TileToPoint);
+        return tiles.Select(Converters.ToPoint2D);
     }
 }
 
 internal static class Converters
 {
-    internal static Tile Point2DToTile(Point2D point)
+    internal static Tile ToTile(Point2D point)
     {
         return new Tile(point.X, point.Y);
     }
 
-    internal static Point2D TileToPoint(Tile tile)
+    internal static Point2D ToPoint2D(Tile tile)
     {
         return new Point2D((int)tile.X, (int)tile.Y);
     }

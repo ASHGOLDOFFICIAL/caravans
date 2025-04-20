@@ -178,6 +178,7 @@ internal partial class Level : Node2D
             TerrainId.Grass => new Vector2I(1, 0),
             TerrainId.Path => new Vector2I(2, 0),
             TerrainId.Water => new Vector2I(3, 0),
+            TerrainId.City => new Vector2I(4, 0),
             _ => Vector2I.Zero
         };
     }

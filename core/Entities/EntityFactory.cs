@@ -24,8 +24,9 @@ public static class EntityFactory
         manager.SetComponent(entity, new Networked());
         manager.SetComponent(entity, new Abilities(3));
         manager.SetComponent(entity, new CollisionBox(1, 1));
-        manager.SetComponent(entity, new PreferredSpawnTerrain([TerrainId.Path]));
-        manager.SetComponent(entity, new TargetTilePreference(TargetingPolicy.Random, [TerrainId.Path]));
+        manager.SetComponent(entity, new PreferredSpawnTerrain([TerrainId.City]));
+        manager.SetComponent(entity, new TargetTilePreference(TargetingPolicy.Random, [TerrainId.City]));
+        manager.SetComponent(entity, new PathPreference([TerrainId.Path, TerrainId.City]));
         manager.SetComponent(entity, new Score(100));
         return entity;
     }
