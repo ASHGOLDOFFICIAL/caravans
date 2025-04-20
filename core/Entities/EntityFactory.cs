@@ -22,7 +22,7 @@ public static class EntityFactory
         var entity = manager.CreateEntity();
         manager.SetComponent(entity, new EntityType(EntityId.Caravan));
         manager.SetComponent(entity, new Networked());
-        manager.SetComponent(entity, new Abilities(3));
+        manager.SetComponent(entity, new Abilities(1));
         manager.SetComponent(entity, new CollisionBox(1, 1));
         manager.SetComponent(entity, new PreferredSpawnTerrain([TerrainId.City]));
         manager.SetComponent(entity, new TargetTilePreference(TargetingPolicy.Random, [TerrainId.City]));

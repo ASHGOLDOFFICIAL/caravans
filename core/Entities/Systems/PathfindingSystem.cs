@@ -9,7 +9,7 @@ namespace CaravansCore.Entities.Systems;
 
 internal class PathfindingSystem(Layout level) : ISystem
 {
-    private readonly IPathfinder _allAllowedPathfinder = new Pathfinder(null);
+    private readonly Pathfinder _allAllowedPathfinder = new(null);
     private readonly HashSet<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetTile)];
 
     public void Update(EntityManager em, float deltaTime)
@@ -51,6 +51,8 @@ internal class PathfindingSystem(Layout level) : ISystem
     {
         var start = TileTools.NearestTile(pos.Value);
         var end = tile.Tile;
+        if (start == end) return new Path([]);
+        
         em.TryGetComponent<PathPreference>(entity, out var preference);
         var path = preference is null
             ? _allAllowedPathfinder.FindPath(level, start, end)

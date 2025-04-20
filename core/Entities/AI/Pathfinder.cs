@@ -45,7 +45,7 @@ internal class AdjacentTilesProvider : INeighborProvider
     }
 }
 
-internal class Pathfinder(HashSet<TerrainId>? allowed) : IPathfinder {
+internal class Pathfinder(HashSet<TerrainId>? allowed) {
     public IEnumerable<Point2D> FindPath(Layout level, Point2D start, Point2D end)
     {
         var from = Converters.ToTile(start);
