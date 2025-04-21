@@ -1,4 +1,5 @@
 using CaravansCore.Entities.Components;
+using CaravansCore.Utils;
 
 namespace CaravansCore.Entities.Systems;
 
@@ -26,7 +27,9 @@ public class CollisionDetectionSystem : ISystem
                 if (positionB is null) continue;
                 em.TryGetComponent<CollisionBox>(entityB, out var boxB);
                 if (boxB is null) continue;
-                if (!AabbOverlap(positionA, boxA, positionB, boxB)) continue;
+                
+                if (!CollisionTools.AabbOverlap(positionA, boxA, positionB, boxB))
+                    continue;
 
                 if (!collisions.TryAdd(entityA, [entityB]))
                     collisions[entityA].Add(entityB);
@@ -37,19 +40,5 @@ public class CollisionDetectionSystem : ISystem
 
         foreach (var (entity, collided) in collisions)
             em.SetComponent(entity, new CollisionResult(collided));
-    }
-
-    private static bool AabbOverlap(Position a, CollisionBox boxA, Position b, CollisionBox boxB)
-    {
-        var aOriginX = a.Value.X - boxA.Width / 2;
-        var aOriginY = a.Value.Y - boxA.Height / 2;
-        var bOriginX = b.Value.X - boxB.Width / 2;
-        var bOriginY = b.Value.Y - boxB.Height / 2;
-
-        var xInside = aOriginX < bOriginX + boxB.Width &&
-                      aOriginX + boxA.Width > bOriginX;
-        var yInside = aOriginY < bOriginY + boxB.Height &&
-                      aOriginY + boxA.Height > bOriginY;
-        return xInside && yInside;
     }
 }
