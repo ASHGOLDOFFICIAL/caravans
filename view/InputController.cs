@@ -1,5 +1,5 @@
 using CaravansCore;
-using CaravansCore.Objects;
+using CaravansCore.Level.Content;
 using CaravansView.Entities;
 using CaravansView.Entities.Player;
 using Godot;
@@ -52,7 +52,7 @@ internal partial class InputController : Node2D
         {
             var interacted = TryToInteract(GetGlobalMousePosition());
             if (interacted) return;
-            Controller.PlaceObject(new StoneWall(), selectedTile);
+            Controller.PlaceObject(ObjectId.StoneWall, selectedTile);
         }
     }
 

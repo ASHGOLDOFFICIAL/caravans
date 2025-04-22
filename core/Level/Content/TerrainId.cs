@@ -1,4 +1,4 @@
-namespace CaravansCore.Terrain;
+namespace CaravansCore.Level.Content;
 
 public enum TerrainId
 {

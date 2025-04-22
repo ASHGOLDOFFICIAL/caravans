@@ -17,19 +17,17 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
                 if (connection is null) continue;
                 clients.TryGetValue(connection.ClientId, out var client);
                 if (client is null) continue;
-                var snapshot = BuildSnapshotForClient(
-                    entity, em,
-                    connection.State == ConnectionState.AwaitingInitialSync);
+                var snapshot = BuildSnapshotForClient(em,
+                    entity, connection.State == ConnectionState.AwaitingInitialSync);
                 em.SetComponent(entity, connection with { State = ConnectionState.Synced });
                 client.Receive(snapshot);
             }
     }
 
     private Snapshot BuildSnapshotForClient(
-        Entity client,
         EntityManager em,
-        bool initial = false
-    )
+        Entity client,
+        bool initial = false)
     {
         var playerSnapshot = BuildPlayerSnapshot(em, client);
         var worldSnapshot = BuildWorldSnapshot(em, initial);
@@ -51,7 +49,7 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
     private WorldSnapshot BuildWorldSnapshot(EntityManager em, bool initial)
     {
         var terrain = initial ? level.Layout.GetTerrainLayer() : null;
-        var objects = level.Layout.GetObjects();
+        var objects = level.Layout.GetObjectLayer();
         var entities = BuildEntitySnapshots(em);
         return new WorldSnapshot(level.Layout.Width, level.Layout.Height, terrain, objects, entities);
     }

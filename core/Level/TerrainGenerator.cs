@@ -1,4 +1,4 @@
-using CaravansCore.Terrain;
+using CaravansCore.Level.Content;
 using CaravansCore.Utils;
 
 namespace CaravansCore.Level;

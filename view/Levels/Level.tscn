@@ -1,11 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://cv3m8vy2s48o4"]
+[gd_scene load_steps=4 format=3 uid="uid://cv3m8vy2s48o4"]
 
-[ext_resource type="TileSet" uid="uid://fi3uoerem0s6" path="res://Levels/Assets/tileset.tres" id="1_acdnu"]
 [ext_resource type="Script" uid="uid://4ssyftka641s" path="res://Levels/Level.cs" id="1_q1cbv"]
+[ext_resource type="TileSet" uid="uid://7slorupj8qtx" path="res://Levels/Assets/terrain.tres" id="2_24c1m"]
+[ext_resource type="TileSet" uid="uid://dqsi46h84exn2" path="res://Levels/Assets/objects.tres" id="3_wbw1h"]
 
-[node name="Level" type="Node2D" node_paths=PackedStringArray("_tileMap")]
+[node name="Level" type="Node2D" node_paths=PackedStringArray("_terrainLayer", "_objectLayer")]
 script = ExtResource("1_q1cbv")
-_tileMap = NodePath("TileMapLayer")
+_terrainLayer = NodePath("Terrain")
+_objectLayer = NodePath("Objects")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
-tile_set = ExtResource("1_acdnu")
+[node name="Terrain" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_24c1m")
+
+[node name="Objects" type="TileMapLayer" parent="."]
+tile_set = ExtResource("3_wbw1h")

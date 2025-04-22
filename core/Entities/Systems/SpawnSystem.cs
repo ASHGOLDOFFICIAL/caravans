@@ -1,6 +1,6 @@
 using CaravansCore.Entities.Components;
 using CaravansCore.Level;
-using CaravansCore.Terrain;
+using CaravansCore.Level.Content;
 using CaravansCore.Utils;
 using Godot;
 using Vector2 = System.Numerics.Vector2;

@@ -1,7 +1,7 @@
 using CaravansCore.Entities;
 using CaravansCore.Entities.Components;
 using CaravansCore.Level;
-using CaravansCore.Objects;
+using CaravansCore.Level.Content;
 using CaravansCore.Utils;
 using Vector2 = System.Numerics.Vector2;
 
@@ -28,7 +28,7 @@ public class PlayerController
         _level.Layout.RemoveObject(position);
     }
 
-    public void PlaceObject(IObject @object, Point2D position)
+    public void PlaceObject(ObjectId @object, Point2D position)
     {
         _level.Layout.PlaceObject(@object, position);
     }

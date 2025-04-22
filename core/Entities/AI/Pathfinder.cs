@@ -2,7 +2,7 @@ using AStarNavigator;
 using AStarNavigator.Algorithms;
 using AStarNavigator.Providers;
 using CaravansCore.Level;
-using CaravansCore.Terrain;
+using CaravansCore.Level.Content;
 using CaravansCore.Utils;
 
 namespace CaravansCore.Entities.AI;

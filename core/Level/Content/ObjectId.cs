@@ -1,4 +1,4 @@
-namespace CaravansCore.Objects;
+namespace CaravansCore.Level.Content;
 
 public enum ObjectId
 {

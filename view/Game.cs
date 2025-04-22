@@ -1,17 +1,17 @@
 using CaravansCore;
 using CaravansCore.Networking;
+using CaravansView.Levels;
 using CaravansView.UI;
 using Godot;
-using Level = CaravansView.Levels.Level;
 
 namespace CaravansView;
 
 internal partial class Game : Node, IClient
 {
     private readonly GameServer _server = new();
+    
     [Export] private InputController _inputController;
     [Export] private Level _levelScene;
-
     [Export] private InGamePlayerUi _playerUi;
 
     public void Receive(Snapshot snapshot)

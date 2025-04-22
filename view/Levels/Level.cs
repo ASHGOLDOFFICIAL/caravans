@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
+using CaravansCore.Level.Content;
 using CaravansCore.Networking;
-using CaravansCore.Objects;
-using CaravansCore.Terrain;
 using CaravansCore.Utils;
 using CaravansView.Entities;
 using CaravansView.Entities.Player;
-using CaravansView.Objects;
 using CaravansView.Utils;
 using Godot;
 
@@ -17,22 +15,20 @@ internal partial class Level : Node2D
     private const int TileSize = 16;
     private readonly object _bindingLock = new();
     private readonly Dictionary<Guid, Node2D> _entities = [];
-
     private readonly EntityProvider _entityProvider = new();
-    private readonly ObjectProvider _objectProvider = new();
-    private readonly Dictionary<Point2D, Node2D> _objects = [];
 
-    private readonly Queue<PlayerSnapshot> _playerSnapshots = [];
-
-    private readonly object _terrainLock = new();
+    private readonly object _layerSetupLock = new();
     private readonly Dictionary<Node2D, Guid> _uuids = [];
     private readonly Queue<WorldSnapshot> _worldSnapshots = [];
+    private readonly Queue<PlayerSnapshot> _playerSnapshots = [];
 
     [Export] private Player _player;
     private Guid _playerGuid;
     private int _playerSpeed;
     private bool _terrainSet;
-    [Export] private TileMapLayer _tileMap;
+    
+    [Export] private TileMapLayer _terrainLayer;
+    [Export] private TileMapLayer _objectLayer;
 
     public override void _Process(double delta)
     {
@@ -80,12 +76,8 @@ internal partial class Level : Node2D
 
     private void SetupLevel(WorldSnapshot world)
     {
-        SetupTerrain(world);
-
-        var objects = world.Objects;
-        if (objects is not null)
-            foreach (var (pos, id) in objects)
-                AddObject(id, pos);
+        SetupTerrainLayer(world);
+        SetupObjectLayer(world);
 
         var entities = world.Entities;
         if (entities is null) return;
@@ -113,25 +105,9 @@ internal partial class Level : Node2D
             CallDeferred(Node.MethodName.AddChild, instance);
     }
 
-    private void AddObject(ObjectId @object, Point2D point)
+    private void SetupTerrainLayer(WorldSnapshot world)
     {
-        var instance = _objectProvider.Provide(@object);
-        if (instance is null) return;
-        instance.Position = GamePosition(Converter.ToGodotVector(point));
-        if (_objects.TryAdd(point, instance))
-            CallDeferred(Node.MethodName.AddChild, instance);
-    }
-
-    private void RemoveObject(Point2D point)
-    {
-        _objects.TryGetValue(point, out var node);
-        _objects.Remove(point);
-        node?.QueueFree();
-    }
-
-    private void SetupTerrain(WorldSnapshot world)
-    {
-        lock (_terrainLock)
+        lock (_layerSetupLock)
         {
             if (_terrainSet)
                 return;
@@ -145,8 +121,26 @@ internal partial class Level : Node2D
                 var x = i % world.Width;
                 var y = i / world.Width;
                 var terrainId = terrain[i];
-                _tileMap.SetCell(new Vector2I(x, y), 1, TileAtlasPosition(terrainId));
+                _terrainLayer.SetCell(new Vector2I(x, y), 1, TerrainAtlasPosition(terrainId));
             }
+        }
+    }
+
+    private void SetupObjectLayer(WorldSnapshot world)
+    {
+        var objects = world.Objects;
+        for (var i = 0; i < world.Width * world.Height; ++i)
+        {
+            var x = i % world.Width;
+            var y = i / world.Width;
+            var objectId = objects[i];
+            var position = new Vector2I(x, y);
+            if (objectId is not {} nonNullObjectId)
+            {
+                _objectLayer.EraseCell(position);
+                continue;
+            }
+            _objectLayer.SetCell(position, 0, ObjectsAtlasPosition(nonNullObjectId));
         }
     }
 
@@ -171,7 +165,7 @@ internal partial class Level : Node2D
         return new Vector2(x, y);
     }
 
-    private static Vector2I TileAtlasPosition(TerrainId id)
+    private static Vector2I TerrainAtlasPosition(TerrainId id)
     {
         return id switch
         {
@@ -179,6 +173,15 @@ internal partial class Level : Node2D
             TerrainId.Path => new Vector2I(2, 0),
             TerrainId.Water => new Vector2I(3, 0),
             TerrainId.City => new Vector2I(4, 0),
+            _ => Vector2I.Zero
+        };
+    }
+    
+    private static Vector2I ObjectsAtlasPosition(ObjectId id)
+    {
+        return id switch
+        {
+            ObjectId.StoneWall => new Vector2I(1, 0),
             _ => Vector2I.Zero
         };
     }

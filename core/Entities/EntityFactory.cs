@@ -1,5 +1,5 @@
 using CaravansCore.Entities.Components;
-using CaravansCore.Terrain;
+using CaravansCore.Level.Content;
 
 namespace CaravansCore.Entities;
 
