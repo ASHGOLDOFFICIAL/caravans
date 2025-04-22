@@ -15,4 +15,11 @@ public static class TileTools
         var tileY = (int)(realPosition.Y + 0.5);
         return new Point2D(tileX, tileY);
     }
+
+    public static long DistanceSquared(Point2D from, Point2D to)
+    {
+        var deltaX = to.X - from.X;
+        var deltaY = to.Y - from.Y;
+        return deltaX * deltaX + deltaY * deltaY;
+    }
 }
