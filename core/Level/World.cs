@@ -4,7 +4,7 @@ namespace CaravansCore.Level;
 
 public class World
 {
-    private const int Seed = 2;
+    private const int Seed = 79;
 
     internal Layout Layout { get; } =
         new TerrainGenerator(Seed).Generate(64, 64);

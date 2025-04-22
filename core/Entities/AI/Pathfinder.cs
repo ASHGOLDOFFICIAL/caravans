@@ -7,7 +7,7 @@ using CaravansCore.Utils;
 
 namespace CaravansCore.Entities.AI;
 
-internal class NoBlockedProvider(Layout level) : IBlockedProvider
+internal class NoBlockedProvider : IBlockedProvider
 {
     public bool IsBlocked(Tile coord)
     {
@@ -52,7 +52,7 @@ internal class Pathfinder(HashSet<TerrainId>? allowed) {
         var to = Converters.ToTile(end);
 
         IBlockedProvider blocker = allowed is null
-            ? new NoBlockedProvider(level)
+            ? new NoBlockedProvider()
             : new OnlyAllowedBlockedProvider(level, allowed);
         
         var navigator = new TileNavigator(
