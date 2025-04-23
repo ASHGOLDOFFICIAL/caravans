@@ -18,17 +18,17 @@ internal partial class Level : Node2D
     private readonly EntityProvider _entityProvider = new();
 
     private readonly object _layerSetupLock = new();
+    private readonly Queue<PlayerSnapshot> _playerSnapshots = [];
     private readonly Dictionary<Node2D, Guid> _uuids = [];
     private readonly Queue<WorldSnapshot> _worldSnapshots = [];
-    private readonly Queue<PlayerSnapshot> _playerSnapshots = [];
+    [Export] private TileMapLayer _objectLayer;
 
     [Export] private Player _player;
     private Guid _playerGuid;
     private int _playerSpeed;
-    private bool _terrainSet;
-    
+
     [Export] private TileMapLayer _terrainLayer;
-    [Export] private TileMapLayer _objectLayer;
+    private bool _terrainSet;
 
     public override void _Process(double delta)
     {
@@ -135,11 +135,12 @@ internal partial class Level : Node2D
             var y = i / world.Width;
             var objectId = objects[i];
             var position = new Vector2I(x, y);
-            if (objectId is not {} nonNullObjectId)
+            if (objectId is not { } nonNullObjectId)
             {
                 _objectLayer.EraseCell(position);
                 continue;
             }
+
             _objectLayer.SetCell(position, 0, ObjectsAtlasPosition(nonNullObjectId));
         }
     }
@@ -176,7 +177,7 @@ internal partial class Level : Node2D
             _ => Vector2I.Zero
         };
     }
-    
+
     private static Vector2I ObjectsAtlasPosition(ObjectId id)
     {
         return id switch

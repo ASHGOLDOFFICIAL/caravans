@@ -1,6 +1,5 @@
 using CaravansCore.Level.Content;
 using CaravansCore.Utils;
-using Godot;
 
 namespace CaravansCore.Level;
 
@@ -19,13 +18,21 @@ internal class Layout(int width, int height)
 
     public TerrainId? GetTerrain(Point2D position)
     {
-        if (!InsideBoundaries(position)) return null;
-        return _terrainLayer[Point2DToIndex(position)];
+        return InsideBoundaries(position)
+            ? _terrainLayer[Point2DToIndex(position)]
+            : null;
     }
 
     public ObjectId?[] GetObjectLayer()
     {
         return _objectsLayer;
+    }
+
+    public ObjectId? GetObject(Point2D position)
+    {
+        return InsideBoundaries(position)
+            ? _objectsLayer[Point2DToIndex(position)]
+            : null;
     }
 
     public void PlaceTerrain(TerrainId terrain, Point2D position)
@@ -38,7 +45,6 @@ internal class Layout(int width, int height)
     {
         if (!CanPlaceObject(position)) return;
         _objectsLayer[Point2DToIndex(position)] = @object;
-        GD.Print($"Placed {@object} at {position}");
     }
 
     public void RemoveObject(Point2D position)
@@ -46,7 +52,6 @@ internal class Layout(int width, int height)
         var index = Point2DToIndex(position);
         if (!InsideBoundaries(position) || _objectsLayer[index] is null) return;
         _objectsLayer[index] = null;
-        GD.Print($"Remove at {position}");
     }
 
     private bool CanPlaceObject(Point2D position)

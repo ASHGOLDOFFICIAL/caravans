@@ -17,14 +17,14 @@ internal class NoBlockedProvider : IBlockedProvider
 
 internal class OnlyAllowedBlockedProvider(Layout level, HashSet<TerrainId> allowed) : IBlockedProvider
 {
-    private bool IsAllowed(Tile coord)
-    {
-        return allowed.Any(terrain => level.GetTerrain(Converters.ToPoint2D(coord)) == terrain);
-    }
-    
     public bool IsBlocked(Tile coord)
     {
         return !IsAllowed(coord);
+    }
+
+    private bool IsAllowed(Tile coord)
+    {
+        return allowed.Any(terrain => level.GetTerrain(Converters.ToPoint2D(coord)) == terrain);
     }
 }
 
@@ -45,7 +45,8 @@ internal class AdjacentTilesProvider : INeighborProvider
     }
 }
 
-internal class Pathfinder(HashSet<TerrainId>? allowed) {
+internal class Pathfinder(HashSet<TerrainId>? allowed)
+{
     public IEnumerable<Point2D> FindPath(Layout level, Point2D start, Point2D end)
     {
         var from = Converters.ToTile(start);
@@ -54,7 +55,7 @@ internal class Pathfinder(HashSet<TerrainId>? allowed) {
         IBlockedProvider blocker = allowed is null
             ? new NoBlockedProvider()
             : new OnlyAllowedBlockedProvider(level, allowed);
-        
+
         var navigator = new TileNavigator(
             blocker,
             new AdjacentTilesProvider(),
