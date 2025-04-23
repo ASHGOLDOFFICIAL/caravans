@@ -1,5 +1,6 @@
 using CaravansCore.Entities;
 using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 using CaravansCore.Level;
 using CaravansCore.Level.Content;
 using CaravansCore.Utils;
@@ -18,9 +19,9 @@ public class PlayerController
         _controlledPlayer = player;
     }
 
-    public void MovePlayer(Vector2 to)
+    public void MovePlayer(Vector2 direction)
     {
-        _level.EntityManager.SetComponent(_controlledPlayer, new Position(to));
+        _level.EntityManager.SetComponent(_controlledPlayer, new PlayerSubmittedPosition(direction));
     }
 
     public void RemoveObject(Point2D position)

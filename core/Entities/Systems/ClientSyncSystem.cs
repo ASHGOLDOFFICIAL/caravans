@@ -1,4 +1,5 @@
 using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 using CaravansCore.Level;
 using CaravansCore.Networking;
 
@@ -74,7 +75,7 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
         if (id is null) return null;
 
         em.TryGetComponent<Abilities>(entity, out var abilities);
-        var snapshot = new EntitySnapshot(id.Id, entity.Uuid, position.Value, abilities?.Speed);
+        var snapshot = new EntitySnapshot(id.Id, entity.Uuid, position.Coordinates, abilities?.Speed);
         return snapshot;
     }
 }

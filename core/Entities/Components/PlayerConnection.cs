@@ -1,10 +1,6 @@
-namespace CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 
-public enum ConnectionState
-{
-    AwaitingInitialSync,
-    Synced
-}
+namespace CaravansCore.Entities.Components;
 
 public record PlayerConnection(
     Guid ClientId,

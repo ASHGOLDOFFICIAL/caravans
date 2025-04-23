@@ -160,13 +160,14 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
-size = Vector2(10, 16)
+size = Vector2(8, 8)
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("_animatedSprite")]
 script = ExtResource("1_vweq0")
 _animatedSprite = NodePath("AnimatedSprite2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -4)
 sprite_frames = SubResource("SpriteFrames_5qrx2")
 animation = &"idle_up"
 frame_progress = 0.744905

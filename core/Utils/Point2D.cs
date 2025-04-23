@@ -8,7 +8,7 @@ public readonly record struct Point2D(int X, int Y)
 
     public int Y { get; } = Y;
 
-    public Vector2 ToVector2D()
+    public Vector2 ToVector2()
     {
         return new Vector2(X, Y);
     }

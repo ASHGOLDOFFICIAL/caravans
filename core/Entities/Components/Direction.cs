@@ -2,4 +2,4 @@ using System.Numerics;
 
 namespace CaravansCore.Entities.Components;
 
-public record Position(Vector2 Coordinates) : IComponent;
+public record Direction(Vector2 Vector) : IComponent;

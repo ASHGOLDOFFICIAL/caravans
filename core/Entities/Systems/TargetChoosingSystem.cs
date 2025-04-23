@@ -1,4 +1,5 @@
 using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 using CaravansCore.Level;
 using CaravansCore.Level.Content;
 using CaravansCore.Utils;
@@ -9,7 +10,9 @@ namespace CaravansCore.Entities.Systems;
 internal class TargetChoosingSystem(Layout level) : ISystem
 {
     private readonly Random _random = new();
-    private readonly HashSet<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetTilePreference)];
+
+    private readonly HashSet<Type> _requiredComponentTypes =
+        [typeof(Position), typeof(TargetTilePreference)];
 
     public void Update(EntityManager em, float deltaTime)
     {
@@ -17,10 +20,8 @@ internal class TargetChoosingSystem(Layout level) : ISystem
         {
             em.TryGetComponent<TargetTile>(entity, out var target);
             if (target is not null) continue;
-
             em.TryGetComponent<Position>(entity, out var position);
             if (position is null) continue;
-
             em.TryGetComponent<TargetTilePreference>(entity, out var preference);
             if (preference is null) continue;
 

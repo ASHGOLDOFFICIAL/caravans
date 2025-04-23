@@ -1,5 +1,5 @@
 using System.Numerics;
-using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 
 namespace CaravansCore.Networking;
 

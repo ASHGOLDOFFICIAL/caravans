@@ -1,4 +1,5 @@
 using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 
 namespace CaravansCore.Entities.Systems;
 

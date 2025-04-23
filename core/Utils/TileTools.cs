@@ -1,4 +1,4 @@
-using System.Numerics;
+using Vector2 = System.Numerics.Vector2;
 
 namespace CaravansCore.Utils;
 
@@ -11,8 +11,8 @@ public static class TileTools
 
     public static Point2D NearestTile(Vector2 realPosition)
     {
-        var tileX = (int)(realPosition.X + 0.5);
-        var tileY = (int)(realPosition.Y + 0.5);
+        var tileX = (int)Math.Round(realPosition.X);
+        var tileY = (int)Math.Round(realPosition.Y);
         return new Point2D(tileX, tileY);
     }
 

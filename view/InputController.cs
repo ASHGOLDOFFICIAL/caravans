@@ -36,6 +36,7 @@ internal partial class InputController : Node2D
             MoveUp, MoveDown);
         if (inputDirection == Vector2.Zero) return;
         _level.MovePlayer(inputDirection);
+        // TODO: Send only after player was bound
         Controller?.MovePlayer(Level.TilePosition(_player.Position));
     }
 

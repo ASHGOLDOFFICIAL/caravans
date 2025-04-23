@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 using Godot;
 
 namespace CaravansView.Entities;

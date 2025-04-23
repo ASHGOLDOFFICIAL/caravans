@@ -38,7 +38,7 @@ internal class SpawnSystem(Layout level) : ISystem
             em.SetComponent(entity, connection with { Spawned = true });
             var position = new Position(new Vector2(10, 15));
             em.SetComponent(entity, position);
-            GD.Print($"Spawn player {entity} at {position.Value}");
+            GD.Print($"Spawn player {entity} at {position.Coordinates}");
         }
     }
 
@@ -61,7 +61,7 @@ internal class SpawnSystem(Layout level) : ISystem
 
         _caravanSpawned = true;
         em.SetComponent(entity, position);
-        GD.Print($"Spawn caravan {entity} at {position.Value}");
+        GD.Print($"Spawn caravan {entity} at {position.Coordinates}");
     }
 
     private void TryFindSpawnPosition(HashSet<TerrainId> preferredTiles, out Position? position)
@@ -75,7 +75,7 @@ internal class SpawnSystem(Layout level) : ISystem
         {
             var point = new Point2D(x, y);
             if (level.GetTerrain(point) != tile) continue;
-            position = new Position(point.ToVector2D());
+            position = new Position(point.ToVector2());
             return;
         }
 

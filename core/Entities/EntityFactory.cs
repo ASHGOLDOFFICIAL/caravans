@@ -1,4 +1,5 @@
 using CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 using CaravansCore.Level.Content;
 
 namespace CaravansCore.Entities;
@@ -12,7 +13,7 @@ public static class EntityFactory
         manager.SetComponent(entity, new Networked());
         manager.SetComponent(entity, new PlayerConnection(clientId));
         manager.SetComponent(entity, new Abilities(10));
-        manager.SetComponent(entity, new CollisionBox(1, 1));
+        manager.SetComponent(entity, new CollisionBox(0.5f, 0.5f));
         manager.SetComponent(entity, new Score(0));
         return entity;
     }

@@ -36,7 +36,7 @@ internal class PathfindingSystem(Layout level) : ISystem
                 continue;
             }
 
-            if (TileTools.NearlyEqual(position.Value, path.Value.First()))
+            if (TileTools.NearlyEqual(position.Coordinates, path.Value.First()))
             {
                 path.Value.Dequeue();
                 continue;
@@ -49,10 +49,10 @@ internal class PathfindingSystem(Layout level) : ISystem
 
     private Path FindPath(EntityManager em, Entity entity, Position pos, TargetTile tile)
     {
-        var start = TileTools.NearestTile(pos.Value);
+        var start = TileTools.NearestTile(pos.Coordinates);
         var end = tile.Tile;
         if (start == end) return new Path([]);
-        
+
         em.TryGetComponent<PathPreference>(entity, out var preference);
         var path = preference is null
             ? _allAllowedPathfinder.FindPath(level, start, end)
@@ -60,12 +60,12 @@ internal class PathfindingSystem(Layout level) : ISystem
         return new Path(new Queue<Point2D>(path));
     }
 
-    private static Velocity ChooseDirection(Position pos, Path path)
+    private static Direction ChooseDirection(Position pos, Path path)
     {
-        var positionValue = pos.Value;
+        var positionValue = pos.Coordinates;
         var pathValue = path.Value;
         var next = pathValue.Peek();
         var newVector = new Vector2(next.X - positionValue.X, next.Y - positionValue.Y);
-        return new Velocity(newVector);
+        return new Direction(newVector);
     }
 }

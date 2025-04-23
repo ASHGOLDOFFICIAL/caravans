@@ -1,9 +1,6 @@
-namespace CaravansCore.Entities.Components;
+using CaravansCore.Entities.Components.Types;
 
-public enum InteractionType
-{
-    Default
-}
+namespace CaravansCore.Entities.Components;
 
 internal record InteractionRequest(
     Entity TargetEntity,
