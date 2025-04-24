@@ -7,5 +7,6 @@ public readonly record struct EntitySnapshot(
     EntityId Id,
     Guid Uuid,
     Vector2 Position,
+    Vector2? Rotation,
     int? Speed
 );
