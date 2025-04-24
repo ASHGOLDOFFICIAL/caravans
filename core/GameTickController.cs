@@ -11,7 +11,9 @@ internal class GameTickController(GameServer server)
     private readonly ClientSyncSystem _clientSyncSystem = new(server.World, server.Clients);
     private readonly CollisionDetectionSystem _collisionDetectionSystem = new(server.World.Layout);
     private readonly CollisionResolutionSystem _collisionResolutionSystem = new();
+    private readonly DecisionMakingSystem _decisionMakingSystem = new();
     private readonly EntityManager _entityManager = server.World.EntityManager;
+    private readonly EnvironmentAwarenessSystem _environmentAwarenessSystem = new(server.World.Layout);
     private readonly InteractionSystem _interactionSystem = new();
     private readonly PathfindingSystem _pathfindingSystem = new(server.World.Layout);
     private readonly SpawnSystem _spawnSystem = new(server.World.Layout);
@@ -34,6 +36,10 @@ internal class GameTickController(GameServer server)
 
         // Spawn entities
         _spawnSystem.Update(_entityManager, delta);
+        // Check near environment
+        _environmentAwarenessSystem.Update(_entityManager, delta);
+        // Determine course of action based on environment
+        _decisionMakingSystem.Update(_entityManager, delta);
         // Chose target for them
         _targetChoosingSystem.Update(_entityManager, delta);
         // Find path to target

@@ -1,3 +1,4 @@
+using System.Numerics;
 using CaravansCore.Entities.Components;
 using CaravansCore.Entities.Components.Types;
 using CaravansCore.Level.Content;
@@ -12,7 +13,7 @@ public static class EntityFactory
         manager.SetComponent(entity, new EntityType(EntityId.Player));
         manager.SetComponent(entity, new Networked());
         manager.SetComponent(entity, new PlayerConnection(clientId));
-        manager.SetComponent(entity, new Abilities(10));
+        manager.SetComponent(entity, new Abilities(20));
         manager.SetComponent(entity, new CollisionBox(0.5f, 0.5f));
         manager.SetComponent(entity, new Score(0));
         return entity;
@@ -29,6 +30,8 @@ public static class EntityFactory
         manager.SetComponent(entity, new TargetTilePreference(TargetingPolicy.Random, [TerrainId.City]));
         manager.SetComponent(entity, new PathPreference([TerrainId.Path, TerrainId.City]));
         manager.SetComponent(entity, new Score(100));
+        manager.SetComponent(entity, new FieldOfView(5, 45));
+        manager.SetComponent(entity, new Rotation(Vector2.UnitX));
         return entity;
     }
 }

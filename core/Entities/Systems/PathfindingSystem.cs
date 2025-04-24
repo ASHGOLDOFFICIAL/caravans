@@ -43,7 +43,8 @@ internal class PathfindingSystem(Layout level) : ISystem
             }
 
             var direction = ChooseDirection(position, path);
-            em.SetComponent(entity, direction);
+            em.SetComponent(entity, new Direction(direction));
+            em.SetComponent(entity, new Rotation(direction));
         }
     }
 
@@ -60,12 +61,12 @@ internal class PathfindingSystem(Layout level) : ISystem
         return new Path(new Queue<Point2D>(path));
     }
 
-    private static Direction ChooseDirection(Position pos, Path path)
+    private static Vector2 ChooseDirection(Position pos, Path path)
     {
         var positionValue = pos.Coordinates;
         var pathValue = path.Value;
         var next = pathValue.Peek();
         var newVector = new Vector2(next.X - positionValue.X, next.Y - positionValue.Y);
-        return new Direction(newVector);
+        return newVector;
     }
 }

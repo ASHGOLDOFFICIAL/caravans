@@ -17,6 +17,18 @@ public static class AabbCollisionTools
         return new Aabb(origin, size);
     }
 
+    public static IEnumerable<Point2D> PossibleCollisionTiles(Aabb box)
+    {
+        var xStart = (int)Math.Floor(box.MinX);
+        var yStart = (int)Math.Floor(box.MinY);
+        var xStop = (int)Math.Ceiling(box.MaxX);
+        var yStop = (int)Math.Ceiling(box.MaxY);
+
+        for (var x = xStart; x <= xStop; ++x)
+        for (var y = yStart; y <= yStop; ++y)
+            yield return new Point2D(x, y);
+    }
+
     public static IEnumerable<Point2D> PossibleCollisionTiles(Aabb moving, Aabb desired)
     {
         var originX = Math.Min(moving.MinX, desired.MinX);
