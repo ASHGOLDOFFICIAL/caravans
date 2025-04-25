@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using CaravansCore.Entities.Components;
 using CaravansCore.Level;
 using CaravansCore.Utils;
@@ -26,7 +27,8 @@ internal class VisualSensingSystem(Layout level) : ISystem
             if (rotation is null) continue;
         
             var visionAabb = PossibleCollisionArea(vision, position.Coordinates); 
-            var seenObjects = SeenObjects(vision, rotation.Direction, visionAabb);
+            var seenObjects = SeenObjects(vision, rotation.Direction, visionAabb)
+                .ToImmutableList();
             var seenEntities = new List<Entity>();
 
             var otherEntities = em
@@ -53,7 +55,7 @@ internal class VisualSensingSystem(Layout level) : ISystem
 
             if (seenEntities.Count <= 0 && seenObjects.Count <= 0)
                 continue;
-            em.SetComponent(entity, new LookAroundResult(seenEntities, seenObjects));
+            em.SetComponent(entity, new LookAroundResult(seenEntities.ToImmutableList(), seenObjects));
         }
     }
 

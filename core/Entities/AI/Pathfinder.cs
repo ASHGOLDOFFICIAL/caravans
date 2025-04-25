@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using AStarNavigator;
 using AStarNavigator.Algorithms;
 using AStarNavigator.Providers;
@@ -15,7 +16,7 @@ internal class NoBlockedProvider : IBlockedProvider
     }
 }
 
-internal class OnlyAllowedBlockedProvider(Layout level, HashSet<TerrainId> allowed) : IBlockedProvider
+internal class OnlyAllowedBlockedProvider(Layout level, ImmutableHashSet<TerrainId> allowed) : IBlockedProvider
 {
     public bool IsBlocked(Tile coord)
     {
@@ -45,7 +46,7 @@ internal class AdjacentTilesProvider : INeighborProvider
     }
 }
 
-internal class Pathfinder(HashSet<TerrainId>? allowed)
+internal class Pathfinder(ImmutableHashSet<TerrainId>? allowed)
 {
     public IEnumerable<Point2D> FindPath(Layout level, Point2D start, Point2D end)
     {

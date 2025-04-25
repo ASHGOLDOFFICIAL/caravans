@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using CaravansCore.Entities.Components;
 using CaravansCore.Level;
 using CaravansCore.Utils;
@@ -26,8 +27,10 @@ internal class CollisionDetectionSystem(Layout level) : ISystem
 
             var currentAabb = new Aabb(positionA.Coordinates, boxA);
 
-            var collidingObjects = FindCollidingObjects(currentAabb, velocity.Vector);
-            var collidingEntities = FindCollidingEntities(em, currentAabb, velocity.Vector);
+            var collidingObjects = FindCollidingObjects(currentAabb, velocity.Vector)
+                .ToImmutableList();
+            var collidingEntities = FindCollidingEntities(em, currentAabb, velocity.Vector)
+                .ToImmutableList();
 
             if (collidingObjects.Count != 0 && collidingEntities.Count != 0)
                 continue;

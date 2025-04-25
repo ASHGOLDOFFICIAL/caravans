@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using CaravansCore.Entities.Components;
 using CaravansCore.Level;
 using CaravansCore.Level.Content;
@@ -64,7 +65,9 @@ internal class SpawnSystem(Layout level) : ISystem
         GD.Print($"Spawn caravan {entity} at {position.Coordinates}");
     }
 
-    private void TryFindSpawnPosition(HashSet<TerrainId> preferredTiles, out Position? position)
+    private void TryFindSpawnPosition(
+        ImmutableHashSet<TerrainId> preferredTiles,
+        out Position? position)
     {
         var startX = _random.Next(0, level.Width);
         var startY = _random.Next(0, level.Height);

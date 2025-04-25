@@ -1,5 +1,6 @@
+using System.Collections.Immutable;
 using CaravansCore.Utils;
 
 namespace CaravansCore.Entities.Components;
 
-public record Path(Queue<Point2D> Value) : IComponent;
+public record Path(ImmutableQueue<Point2D> Tiles) : IComponent;

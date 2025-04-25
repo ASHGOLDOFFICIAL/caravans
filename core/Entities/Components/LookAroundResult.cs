@@ -1,8 +1,10 @@
+using System.Collections.Immutable;
 using CaravansCore.Utils;
 
 namespace CaravansCore.Entities.Components;
 
+
 internal record LookAroundResult(
-    List<Entity> SeenEntities,
-    List<Point2D> SeenObjects
+    ImmutableList<Entity> SeenEntities,
+    ImmutableList<Point2D> SeenObjects
 ) : IComponent;

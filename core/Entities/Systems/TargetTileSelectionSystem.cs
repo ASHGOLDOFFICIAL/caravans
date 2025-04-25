@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using CaravansCore.Entities.Components;
 using CaravansCore.Entities.Components.Types;
 using CaravansCore.Level;
@@ -44,7 +45,9 @@ internal class TargetTileSelectionSystem(Layout level) : ISystem
         }
     }
 
-    private void TryFindRandomTarget(HashSet<TerrainId> preference, out TargetTile? target)
+    private void TryFindRandomTarget(
+        ImmutableHashSet<TerrainId> preference,
+        out TargetTile? target)
     {
         var startX = _random.Next(0, level.Width);
         var startY = _random.Next(0, level.Height);

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Numerics;
 using CaravansCore.Entities.AI;
 using CaravansCore.Entities.Components;
@@ -29,16 +30,16 @@ internal class PathfindingSystem(Layout level) : ISystem
                 em.SetComponent(entity, path);
             }
 
-            if (path.Value.Count <= 0)
+            if (path.Tiles.IsEmpty)
             {
                 em.RemoveComponent<TargetTile>(entity);
                 em.RemoveComponent<Path>(entity);
                 continue;
             }
 
-            if (TileTools.NearlyEqual(position.Coordinates, path.Value.First()))
+            if (TileTools.NearlyEqual(position.Coordinates, path.Tiles.First()))
             {
-                path.Value.Dequeue();
+                em.SetComponent(entity, new Path(path.Tiles.Dequeue()));
                 continue;
             }
 
@@ -58,13 +59,13 @@ internal class PathfindingSystem(Layout level) : ISystem
         var path = preference is null
             ? _allAllowedPathfinder.FindPath(level, start, end)
             : new Pathfinder(preference.Tiles).FindPath(level, start, end);
-        return new Path(new Queue<Point2D>(path));
+        return new Path(ImmutableQueue.CreateRange(path));
     }
 
     private static Vector2 ChooseDirection(Position pos, Path path)
     {
         var positionValue = pos.Coordinates;
-        var pathValue = path.Value;
+        var pathValue = path.Tiles;
         var next = pathValue.Peek();
         var newVector = new Vector2(next.X - positionValue.X, next.Y - positionValue.Y);
         return newVector;
