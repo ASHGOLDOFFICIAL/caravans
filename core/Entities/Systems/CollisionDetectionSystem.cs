@@ -9,21 +9,18 @@ namespace CaravansCore.Entities.Systems;
 
 internal class CollisionDetectionSystem(Layout level) : ISystem
 {
-    private readonly HashSet<Type> _requiredComponentTypes =
+    private readonly List<Type> _requiredComponentTypes =
         [typeof(Position), typeof(CollisionBox), typeof(Velocity)];
 
     public void Update(EntityManager em, float deltaTime)
     {
         var entities = em.GetAllEntitiesWith(_requiredComponentTypes).ToList();
 
-        foreach (var entityA in entities)
+        foreach (var (entityA, components) in entities)
         {
-            em.TryGetComponent<Velocity>(entityA, out var velocity);
-            if (velocity is null) continue;
-            em.TryGetComponent<Position>(entityA, out var positionA);
-            if (positionA is null) continue;
-            em.TryGetComponent<CollisionBox>(entityA, out var boxA);
-            if (boxA is null) continue;
+            var velocity = (Velocity)components[typeof(Velocity)];
+            var positionA = (Position)components[typeof(Position)];
+            var boxA = (CollisionBox)components[typeof(CollisionBox)];
 
             var currentAabb = new Aabb(positionA.Coordinates, boxA);
 
@@ -72,12 +69,11 @@ internal class CollisionDetectionSystem(Layout level) : ISystem
 
         var collisionArea = AabbCollisionTools.PossibleCollisionArea(moving, desired);
 
-        foreach (var entity in em.GetAllEntitiesWith<CollisionBox>())
+        foreach (var (entity, entityBox) in em.GetAllEntitiesWith<CollisionBox>())
         {
             em.TryGetComponent<Position>(entity, out var position);
+            
             if (position is null) continue;
-            em.TryGetComponent<CollisionBox>(entity, out var entityBox);
-            if (entityBox is null) continue;
             var entityAabb = new Aabb(position.Coordinates, entityBox);
 
             var collisionPossible = AabbCollisionTools

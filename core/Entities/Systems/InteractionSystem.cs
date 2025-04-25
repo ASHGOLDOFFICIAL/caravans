@@ -7,11 +7,8 @@ public class InteractionSystem : ISystem
 {
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith<InteractionRequest>())
+        foreach (var (entity, request) in em.GetAllEntitiesWith<InteractionRequest>())
         {
-            em.TryGetComponent<InteractionRequest>(entity, out var request);
-            if (request is null) continue;
-
             HandleInteraction(em, entity, request.TargetEntity, request.Type);
             em.RemoveComponent<InteractionRequest>(entity);
         }

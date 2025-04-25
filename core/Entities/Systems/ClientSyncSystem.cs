@@ -11,13 +11,12 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
 
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith<PlayerConnection>())
+        foreach (var (entity, connection) in em.GetAllEntitiesWith<PlayerConnection>())
             lock (_stateCheckLock)
             {
-                em.TryGetComponent<PlayerConnection>(entity, out var connection);
-                if (connection is null) continue;
                 clients.TryGetValue(connection.ClientId, out var client);
                 if (client is null) continue;
+                
                 var snapshot = BuildSnapshotForClient(em,
                     entity, connection.State == ConnectionState.AwaitingInitialSync);
                 em.SetComponent(entity, connection with { State = ConnectionState.Synced });
@@ -58,7 +57,7 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
     private static EntitySnapshot[] BuildEntitySnapshots(EntityManager em)
     {
         List<EntitySnapshot> snapshots = [];
-        foreach (var entity in em.GetAllEntitiesWith<Networked>())
+        foreach (var (entity, _) in em.GetAllEntitiesWith<Networked>())
         {
             var snapshot = BuildEntitySnapshot(em, entity);
             if (snapshot is { } nonNullSnapshot) snapshots.Add(nonNullSnapshot);

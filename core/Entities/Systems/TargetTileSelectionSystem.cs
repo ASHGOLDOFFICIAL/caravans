@@ -12,15 +12,13 @@ internal class TargetTileSelectionSystem(Layout level) : ISystem
 {
     private readonly Random _random = new();
 
-    private readonly HashSet<Type> _requiredComponentTypes =
+    private readonly List<Type> _requiredComponentTypes =
         [typeof(NeedsTargetTile), typeof(TargetTilePreference), typeof(Position)];
 
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith(_requiredComponentTypes))
+        foreach (var (entity, components) in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
-            em.TryGetComponent<NeedsTargetTile>(entity, out var marker);
-            if (marker is null) continue;
             em.TryGetComponent<TargetTile>(entity, out var target);
             if (target is not null)
             {
@@ -28,10 +26,8 @@ internal class TargetTileSelectionSystem(Layout level) : ISystem
                 continue;
             }
             
-            em.TryGetComponent<TargetTilePreference>(entity, out var preference);
-            if (preference is null) continue;
-            em.TryGetComponent<Position>(entity, out var position);
-            if (position is null) continue;
+            var preference = (TargetTilePreference)components[typeof(TargetTilePreference)];
+            var position = (Position)components[typeof(Position)];
 
             TargetTile? targetTile = null;
             if (preference.Policy == TargetingPolicy.Random)

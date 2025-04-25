@@ -8,10 +8,8 @@ public class CollisionResolutionSystem : ISystem
 {
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith<CollisionResult>())
+        foreach (var (entity, collided) in em.GetAllEntitiesWith<CollisionResult>())
         {
-            em.TryGetComponent<CollisionResult>(entity, out var collided);
-            if (collided is null) continue;
             foreach (var point in collided.CollidingObjects)
                 ResolveObjectCollision(em, entity, point);
             foreach (var entityB in collided.CollidingEntities)

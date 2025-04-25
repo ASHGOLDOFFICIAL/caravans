@@ -32,11 +32,11 @@ internal class SpawnSystem(Layout level) : ISystem
 
     private static void SpawnPlayers(EntityManager em)
     {
-        foreach (var entity in em.GetAllEntitiesWith<PlayerConnection>())
+        foreach (var (entity, connection) in em.GetAllEntitiesWith<PlayerConnection>())
         {
-            em.TryGetComponent<PlayerConnection>(entity, out var connection);
-            if (connection is null || connection.Spawned) continue;
-            em.SetComponent(entity, connection with { Spawned = true });
+            if (!connection.Spawned)
+                em.SetComponent(entity, connection with { Spawned = true });
+            
             var position = new Position(new Vector2(10, 15));
             em.SetComponent(entity, position);
             GD.Print($"Spawn player {entity} at {position.Coordinates}");

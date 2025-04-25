@@ -5,29 +5,26 @@ namespace CaravansCore.Entities.Systems;
 
 internal class VelocityCalculationSystem : ISystem
 {
-    private readonly HashSet<Type> _requiredComponentTypes =
+    private readonly List<Type> _requiredComponentTypes =
         [typeof(Direction), typeof(Abilities)];
 
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith(_requiredComponentTypes))
+        foreach (var (entity, components) in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
-            em.TryGetComponent<Direction>(entity, out var direction);
-            if (direction is null || direction.Vector == Vector2.Zero) continue;
-
-            em.TryGetComponent<Abilities>(entity, out var abilities);
-            if (abilities is null) continue;
+            var direction = (Direction)components[typeof(Direction)];
+            if (direction.Vector == Vector2.Zero) continue;
+            
+            var abilities = (Abilities)components[typeof(Abilities)];
 
             var velocity = CalculateVelocity(direction, abilities, deltaTime);
             em.SetComponent(entity, velocity);
         }
 
-        foreach (var player in em.GetAllEntitiesWith<PlayerSubmittedPosition>())
+        foreach (var (player, submitted) in em.GetAllEntitiesWith<PlayerSubmittedPosition>())
         {
             em.TryGetComponent<Position>(player, out var position);
             if (position is null) continue;
-            em.TryGetComponent<PlayerSubmittedPosition>(player, out var submitted);
-            if (submitted is null) continue;
 
             // TODO: make system for validation
             em.SetComponent(player, new Velocity(submitted.Position - position.Coordinates));

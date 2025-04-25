@@ -9,37 +9,33 @@ namespace CaravansCore.Entities.Systems;
 
 internal class VisualSensingSystem(Layout level) : ISystem
 {
-    private readonly HashSet<Type> _requiredComponentTypes =
+    private readonly List<Type> _requiredComponentTypes =
         [typeof(FieldOfView), typeof(Position), typeof(Rotation)];
 
-    private readonly HashSet<Type> _requiredComponentTypesToBeSeen =
+    private readonly List<Type> _requiredComponentTypesToBeSeen =
         [typeof(CollisionBox), typeof(Position)];
 
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith(_requiredComponentTypes))
+        foreach (var (entity, components) in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
-            em.TryGetComponent<FieldOfView>(entity, out var vision);
-            if (vision is null) continue;
-            em.TryGetComponent<Position>(entity, out var position);
-            if (position is null) continue;
-            em.TryGetComponent<Rotation>(entity, out var rotation);
-            if (rotation is null) continue;
+            var vision = (FieldOfView)components[typeof(FieldOfView)];
+            var position = (Position)components[typeof(Position)];
+            var rotation = (Rotation)components[typeof(Rotation)];
         
             var visionAabb = PossibleCollisionArea(vision, position.Coordinates); 
             var seenObjects = SeenObjects(vision, rotation.Direction, visionAabb)
                 .ToImmutableList();
-            var seenEntities = new List<Entity>();
 
             var otherEntities = em
                 .GetAllEntitiesWith(_requiredComponentTypesToBeSeen)
-                .Where(e => e != entity);
-            foreach (var second in otherEntities)
+                .Where(e => e.Item1 != entity);
+            
+            var seenEntities = new List<Entity>();
+            foreach (var (second, componentsB) in otherEntities)
             {
-                em.TryGetComponent<CollisionBox>(second, out var secondBox);
-                if (secondBox is null) continue;
-                em.TryGetComponent<Position>(second, out var positionB);
-                if (positionB is null) continue;
+                var secondBox = (CollisionBox)componentsB[typeof(CollisionBox)];
+                var positionB = (Position)componentsB[typeof(Position)];
 
                 var bAabb = new Aabb(positionB.Coordinates, secondBox);
                 if (!AabbCollisionTools.AabbOverlapsAabb(visionAabb, bAabb))

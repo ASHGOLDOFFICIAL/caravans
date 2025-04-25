@@ -11,17 +11,14 @@ namespace CaravansCore.Entities.Systems;
 internal class PathfindingSystem(Layout level) : ISystem
 {
     private readonly Pathfinder _allAllowedPathfinder = new(null);
-    private readonly HashSet<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetTile)];
+    private readonly List<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetTile)];
 
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith(_requiredComponentTypes))
+        foreach (var (entity, components) in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
-            em.TryGetComponent<TargetTile>(entity, out var tile);
-            if (tile is null) continue;
-
-            em.TryGetComponent<Position>(entity, out var position);
-            if (position is null) continue;
+            var position = (Position)components[typeof(Position)];
+            var tile = (TargetTile)components[typeof(TargetTile)];
 
             em.TryGetComponent<Path>(entity, out var path);
             if (path is null)

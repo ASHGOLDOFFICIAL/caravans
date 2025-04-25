@@ -9,11 +9,8 @@ public class GoalSelectionSystem : ISystem
     
     public void Update(EntityManager em, float deltaTime)
     {
-        foreach (var entity in em.GetAllEntitiesWith<GoalSet>())
+        foreach (var (entity, goals) in em.GetAllEntitiesWith<GoalSet>())
         {
-            em.TryGetComponent<GoalSet>(entity, out var goals);
-            if (goals is null) continue;
-
             var possible = Variants(em, entity, goals.Goals);
             var chosen = possible[_random.Next(possible.Count)];
             SelectGoal(em, entity, chosen);

@@ -68,32 +68,61 @@ public class EntityManager
         forType?.Remove(entity.Uuid);
     }
 
-    internal IEnumerable<Entity> GetAllEntitiesWith<T>() where T : IComponent
+    internal IEnumerable<(Entity, T)> GetAllEntitiesWith<T>() where T : IComponent
     {
         _components.TryGetValue(typeof(T), out var entities);
-        if (entities is null) yield break;
-        foreach (var (entity, _) in entities) yield return new Entity(entity);
+        if (entities is null)
+            yield break;
+
+        foreach (var (entity, component) in entities)
+            yield return (new Entity(entity), (T)component);
     }
 
-    internal IEnumerable<Entity> GetAllEntitiesWith(HashSet<Type> types)
+    internal IEnumerable<(Entity, Dictionary<Type, object>)> GetAllEntitiesWith(List<Type> types)
     {
-        if (types.Count == 0) yield break;
-        foreach (var entity in GetAllEntitiesWith(types.First()))
+        if (types.Count == 0)
+            yield break;
+
+        foreach (var (entity, firstComponent) in GetAllEntitiesWith(types.First()))
         {
-            var hasAll = types
-                .Skip(1)
-                .Aggregate(true, (current, type) => current & HasComponent(type, entity));
-            if (hasAll) yield return entity;
+            var hasAll = true;
+            var components = new Dictionary<Type, object>
+            {
+                [types.First()] = firstComponent
+            };
+
+            foreach (var type in types.Skip(1))
+            {
+                var component = GetComponent(type, entity);
+                if (component is null)
+                {
+                    hasAll = false;
+                    break;
+                }
+
+                components[type] = component;
+            }
+
+            if (hasAll) yield return (entity, components);
         }
     }
 
-    private IEnumerable<Entity> GetAllEntitiesWith(Type type)
+
+    private IEnumerable<(Entity, object)> GetAllEntitiesWith(Type type)
     {
         _components.TryGetValue(type, out var entities);
         if (entities is null) yield break;
 
-        foreach (var (uuid, _) in entities)
-            yield return new Entity(uuid);
+        foreach (var (uuid, component) in entities)
+            yield return (new Entity(uuid), component);
+    }
+
+    private object? GetComponent(Type type, Entity entity)
+    {
+        _components.TryGetValue(type, out var componentForType);
+        if (componentForType is null) return null;
+        componentForType.TryGetValue(entity.Uuid, out var component);
+        return component;
     }
 
     private bool HasComponent(Type type, Entity entity)
