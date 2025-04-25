@@ -11,14 +11,14 @@ namespace CaravansCore.Entities.Systems;
 internal class PathfindingSystem(Layout level) : ISystem
 {
     private readonly Pathfinder _allAllowedPathfinder = new(null);
-    private readonly List<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetTile)];
+    private readonly List<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetPosition)];
 
     public void Update(EntityManager em, float deltaTime)
     {
         foreach (var (entity, components) in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
             var position = (Position)components[typeof(Position)];
-            var tile = (TargetTile)components[typeof(TargetTile)];
+            var tile = (TargetPosition)components[typeof(TargetPosition)];
 
             em.TryGetComponent<Path>(entity, out var path);
             if (path is null)
@@ -29,7 +29,7 @@ internal class PathfindingSystem(Layout level) : ISystem
 
             if (path.Tiles.IsEmpty)
             {
-                em.RemoveComponent<TargetTile>(entity);
+                em.RemoveComponent<TargetPosition>(entity);
                 em.RemoveComponent<Path>(entity);
                 continue;
             }
@@ -46,10 +46,10 @@ internal class PathfindingSystem(Layout level) : ISystem
         }
     }
 
-    private Path FindPath(EntityManager em, Entity entity, Position pos, TargetTile tile)
+    private Path FindPath(EntityManager em, Entity entity, Position pos, TargetPosition position)
     {
         var start = TileTools.NearestTile(pos.Coordinates);
-        var end = tile.Tile;
+        var end = TileTools.NearestTile(position.Tile);
         if (start == end) return new Path([]);
 
         em.TryGetComponent<PathPreference>(entity, out var preference);

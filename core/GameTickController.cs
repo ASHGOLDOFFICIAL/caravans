@@ -18,11 +18,12 @@ internal class GameTickController(GameServer server)
     private readonly InteractionSystem _interactionSystem = new();
     private readonly PathfindingSystem _pathfindingSystem = new(server.World.Layout);
     private readonly SpawnSystem _spawnSystem = new(server.World.Layout);
-    private readonly TargetTileSelectionSystem _targetTileSelectionSystem = new(server.World.Layout);
+    private readonly TargetPositionSelectionSystem _targetPositionSelectionSystem = new(server.World.Layout);
     private readonly Timer _timer = new(Interval);
     private readonly VelocityApplicationSystem _velocityApplicationSystem = new();
     private readonly VelocityCalculationSystem _velocityCalculationSystem = new();
-    private readonly EntityFollowingSystem _entityFollowingSystem = new();
+    private readonly AccompanyEntitySystem _accompanyEntitySystem = new();
+    private readonly AttackEntitySystem _attackEntitySystem = new();
     private DateTime _lastSignalTime;
 
     public void Start()
@@ -43,10 +44,12 @@ internal class GameTickController(GameServer server)
         // Determine course of action based on environment
         _goalSelectionSystem.Update(_entityManager, delta);
         
-        // Go to the direction of following entity
-        _entityFollowingSystem.Update(_entityManager, delta);
         // Chose target if needed
-        _targetTileSelectionSystem.Update(_entityManager, delta);
+        _targetPositionSelectionSystem.Update(_entityManager, delta);
+        // Follow entity
+        _attackEntitySystem.Update(_entityManager, delta);
+        // Accompany entity
+        _accompanyEntitySystem.Update(_entityManager, delta);
         // Find path to target
         _pathfindingSystem.Update(_entityManager, delta);
 

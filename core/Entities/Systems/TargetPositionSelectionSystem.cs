@@ -8,28 +8,28 @@ using Godot;
 
 namespace CaravansCore.Entities.Systems;
 
-internal class TargetTileSelectionSystem(Layout level) : ISystem
+internal class TargetPositionSelectionSystem(Layout level) : ISystem
 {
     private readonly Random _random = new();
 
     private readonly List<Type> _requiredComponentTypes =
-        [typeof(NeedsTargetTile), typeof(TargetTilePreference), typeof(Position)];
+        [typeof(NeedsTargetTile), typeof(TargetPositionPreference), typeof(Position)];
 
     public void Update(EntityManager em, float deltaTime)
     {
         foreach (var (entity, components) in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
-            em.TryGetComponent<TargetTile>(entity, out var target);
+            em.TryGetComponent<TargetPosition>(entity, out var target);
             if (target is not null)
             {
                 em.RemoveComponent<NeedsTargetTile>(entity);
                 continue;
             }
             
-            var preference = (TargetTilePreference)components[typeof(TargetTilePreference)];
+            var preference = (TargetPositionPreference)components[typeof(TargetPositionPreference)];
             var position = (Position)components[typeof(Position)];
 
-            TargetTile? targetTile = null;
+            TargetPosition? targetTile = null;
             if (preference.Policy == TargetingPolicy.Random)
                 TryFindRandomTarget(preference.Preferred, out targetTile);
             
@@ -43,7 +43,7 @@ internal class TargetTileSelectionSystem(Layout level) : ISystem
 
     private void TryFindRandomTarget(
         ImmutableHashSet<TerrainId> preference,
-        out TargetTile? target)
+        out TargetPosition? target)
     {
         var startX = _random.Next(0, level.Width);
         var startY = _random.Next(0, level.Height);
@@ -54,7 +54,7 @@ internal class TargetTileSelectionSystem(Layout level) : ISystem
         {
             var point = new Point2D(x, y);
             if (level.GetTerrain(point) != tile) continue;
-            target = new TargetTile(point);
+            target = new TargetPosition(point.ToVector2());
             return;
         }
 

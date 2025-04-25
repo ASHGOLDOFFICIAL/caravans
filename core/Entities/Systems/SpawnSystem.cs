@@ -34,9 +34,9 @@ internal class SpawnSystem(Layout level) : ISystem
     {
         foreach (var (entity, connection) in em.GetAllEntitiesWith<PlayerConnection>())
         {
-            if (!connection.Spawned)
-                em.SetComponent(entity, connection with { Spawned = true });
+            if (connection.Spawned) continue;
             
+            em.SetComponent(entity, connection with { Spawned = true });
             var position = new Position(new Vector2(10, 15));
             em.SetComponent(entity, position);
             GD.Print($"Spawn player {entity} at {position.Coordinates}");
@@ -45,42 +45,37 @@ internal class SpawnSystem(Layout level) : ISystem
 
     private void SpawnCaravan(EntityManager em)
     {
-        var entity = EntityFactory.RequestCaravan(em);
+        var caravan = EntityFactory.RequestCaravan(em);
         
-        em.TryGetComponent<PreferredSpawnTerrain>(entity, out var preferredTiles);
+        em.TryGetComponent<PreferredSpawnTerrain>(caravan, out var preferredTiles);
         if (preferredTiles is null)
         {
-            em.RemoveEntity(entity);
+            em.RemoveEntity(caravan);
             return;
         }
 
         TryFindSpawnPosition(preferredTiles.Tiles, out var point);
         if (point is not {} position)
         {
-            em.RemoveEntity(entity);
+            em.RemoveEntity(caravan);
             return;
         }
         
-        Point2D? forGuardian = null;
         var possible = TileTools
             .Neighbors(position)
             .Where(p => level.GetObject(p) == null);
         
         foreach (var tile in possible)
         {
-            forGuardian = tile;
-        }
-
-        if (forGuardian is {} forGuardianNonNull)
-        {
             var guardian = EntityFactory.RequestGuardian(em);
-            em.SetComponent(guardian, new FollowedEntity(entity));
-            em.SetComponent(guardian, new Position(forGuardianNonNull.ToVector2()));
+            em.SetComponent(guardian, new AccompanyTarget(caravan));
+            em.SetComponent(guardian, new Position(tile.ToVector2()));
+            break;
         }
 
         _caravanSpawned = true;
-        em.SetComponent(entity, new Position(position.ToVector2()));
-        GD.Print($"Spawn caravan {entity} at {position}");
+        em.SetComponent(caravan, new Position(position.ToVector2()));
+        GD.Print($"Spawn caravan {caravan} at {position}");
     }
 
     private void TryFindSpawnPosition(

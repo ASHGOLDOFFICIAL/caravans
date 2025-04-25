@@ -4,7 +4,7 @@ using CaravansCore.Level.Content;
 
 namespace CaravansCore.Entities.Components;
 
-public record TargetTilePreference(
+public record TargetPositionPreference(
     TargetingPolicy Policy,
     ImmutableHashSet<TerrainId> Preferred
 ) : IComponent;
