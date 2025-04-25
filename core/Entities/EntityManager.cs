@@ -64,7 +64,8 @@ public class EntityManager
         if (!_entities.Contains(entity))
             return;
         var type = typeof(T);
-        _components[type].Remove(entity.Uuid);
+        _components.TryGetValue(type, out var forType);
+        forType?.Remove(entity.Uuid);
     }
 
     internal IEnumerable<Entity> GetAllEntitiesWith<T>() where T : IComponent

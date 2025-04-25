@@ -7,29 +7,39 @@ using Godot;
 
 namespace CaravansCore.Entities.Systems;
 
-internal class TargetChoosingSystem(Layout level) : ISystem
+internal class TargetTileSelectionSystem(Layout level) : ISystem
 {
     private readonly Random _random = new();
 
     private readonly HashSet<Type> _requiredComponentTypes =
-        [typeof(Position), typeof(TargetTilePreference)];
+        [typeof(NeedsTargetTile), typeof(TargetTilePreference), typeof(Position)];
 
     public void Update(EntityManager em, float deltaTime)
     {
         foreach (var entity in em.GetAllEntitiesWith(_requiredComponentTypes))
         {
+            em.TryGetComponent<NeedsTargetTile>(entity, out var marker);
+            if (marker is null) continue;
             em.TryGetComponent<TargetTile>(entity, out var target);
-            if (target is not null) continue;
-            em.TryGetComponent<Position>(entity, out var position);
-            if (position is null) continue;
+            if (target is not null)
+            {
+                em.RemoveComponent<NeedsTargetTile>(entity);
+                continue;
+            }
+            
             em.TryGetComponent<TargetTilePreference>(entity, out var preference);
             if (preference is null) continue;
+            em.TryGetComponent<Position>(entity, out var position);
+            if (position is null) continue;
 
             TargetTile? targetTile = null;
             if (preference.Policy == TargetingPolicy.Random)
                 TryFindRandomTarget(preference.Preferred, out targetTile);
+            
             if (targetTile is null) continue;
+            
             em.SetComponent(entity, targetTile);
+            em.RemoveComponent<NeedsTargetTile>(entity);
             GD.Print($"Target chosen for {entity}: {targetTile}");
         }
     }

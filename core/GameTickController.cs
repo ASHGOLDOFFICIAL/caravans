@@ -1,6 +1,7 @@
 using System.Timers;
 using CaravansCore.Entities;
 using CaravansCore.Entities.Systems;
+using Godot;
 using Timer = System.Timers.Timer;
 
 namespace CaravansCore;
@@ -11,13 +12,13 @@ internal class GameTickController(GameServer server)
     private readonly ClientSyncSystem _clientSyncSystem = new(server.World, server.Clients);
     private readonly CollisionDetectionSystem _collisionDetectionSystem = new(server.World.Layout);
     private readonly CollisionResolutionSystem _collisionResolutionSystem = new();
-    private readonly DecisionMakingSystem _decisionMakingSystem = new();
+    private readonly GoalSelectionSystem _goalSelectionSystem = new();
     private readonly EntityManager _entityManager = server.World.EntityManager;
-    private readonly EnvironmentAwarenessSystem _environmentAwarenessSystem = new(server.World.Layout);
+    private readonly VisualSensingSystem _visualSensingSystem = new(server.World.Layout);
     private readonly InteractionSystem _interactionSystem = new();
     private readonly PathfindingSystem _pathfindingSystem = new(server.World.Layout);
     private readonly SpawnSystem _spawnSystem = new(server.World.Layout);
-    private readonly TargetChoosingSystem _targetChoosingSystem = new(server.World.Layout);
+    private readonly TargetTileSelectionSystem _targetTileSelectionSystem = new(server.World.Layout);
     private readonly Timer _timer = new(Interval);
     private readonly VelocityApplicationSystem _velocityApplicationSystem = new();
     private readonly VelocityCalculationSystem _velocityCalculationSystem = new();
@@ -36,14 +37,16 @@ internal class GameTickController(GameServer server)
 
         // Spawn entities
         _spawnSystem.Update(_entityManager, delta);
-        // Check near environment
-        _environmentAwarenessSystem.Update(_entityManager, delta);
+        // Check what entity can see
+        _visualSensingSystem.Update(_entityManager, delta);
         // Determine course of action based on environment
-        _decisionMakingSystem.Update(_entityManager, delta);
-        // Chose target for them
-        _targetChoosingSystem.Update(_entityManager, delta);
+        _goalSelectionSystem.Update(_entityManager, delta);
+        
+        // Chose target if needed
+        _targetTileSelectionSystem.Update(_entityManager, delta);
         // Find path to target
         _pathfindingSystem.Update(_entityManager, delta);
+
         // Calculate velocity
         _velocityCalculationSystem.Update(_entityManager, delta);
         // Check for collision along desired velocity
@@ -52,6 +55,7 @@ internal class GameTickController(GameServer server)
         _collisionResolutionSystem.Update(_entityManager, delta);
         // Apply clamped velocity
         _velocityApplicationSystem.Update(_entityManager, delta);
+        
         // Check for interactions
         _interactionSystem.Update(_entityManager, delta);
         // Send world state to clients

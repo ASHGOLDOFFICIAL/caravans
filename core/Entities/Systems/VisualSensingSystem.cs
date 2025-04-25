@@ -6,7 +6,7 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace CaravansCore.Entities.Systems;
 
-internal class EnvironmentAwarenessSystem(Layout level) : ISystem
+internal class VisualSensingSystem(Layout level) : ISystem
 {
     private readonly HashSet<Type> _requiredComponentTypes =
         [typeof(FieldOfView), typeof(Position), typeof(Rotation)];
