@@ -22,4 +22,14 @@ public static class TileTools
         var deltaY = to.Y - from.Y;
         return deltaX * deltaX + deltaY * deltaY;
     }
+
+    public static IEnumerable<Point2D> Neighbors(Point2D point)
+    {
+        return Enumerable.Range(-1, 3)
+            .SelectMany(dx => Enumerable
+                .Range(-1, 3)
+                .Select(dy => (dx, dy)))
+            .Where(d => d.dx != 0 || d.dy != 0)
+            .Select(d => new Point2D(point.X + d.dx, point.Y + d.dy));
+    }
 }

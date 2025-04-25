@@ -34,8 +34,8 @@ public class GoalSelectionSystem : ISystem
     {
         return goalType switch
         {
-            GoalType.DoNothing => true,
             GoalType.MoveToTarget => true,
+            GoalType.FollowEntity => true,
             _ => false
         };
     }
@@ -47,8 +47,8 @@ public class GoalSelectionSystem : ISystem
             case GoalType.MoveToTarget:
                 em.SetComponent(entity, new NeedsTargetTile());
                 break;
-            case GoalType.DoNothing:
-            default:
+            case GoalType.FollowEntity:
+                em.SetComponent(entity, new NeedsFollowTarget());
                 break;
         }
     }

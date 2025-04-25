@@ -22,6 +22,7 @@ internal class GameTickController(GameServer server)
     private readonly Timer _timer = new(Interval);
     private readonly VelocityApplicationSystem _velocityApplicationSystem = new();
     private readonly VelocityCalculationSystem _velocityCalculationSystem = new();
+    private readonly EntityFollowingSystem _entityFollowingSystem = new();
     private DateTime _lastSignalTime;
 
     public void Start()
@@ -42,6 +43,8 @@ internal class GameTickController(GameServer server)
         // Determine course of action based on environment
         _goalSelectionSystem.Update(_entityManager, delta);
         
+        // Go to the direction of following entity
+        _entityFollowingSystem.Update(_entityManager, delta);
         // Chose target if needed
         _targetTileSelectionSystem.Update(_entityManager, delta);
         // Find path to target

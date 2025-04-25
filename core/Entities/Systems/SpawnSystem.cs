@@ -46,6 +46,7 @@ internal class SpawnSystem(Layout level) : ISystem
     private void SpawnCaravan(EntityManager em)
     {
         var entity = EntityFactory.RequestCaravan(em);
+        
         em.TryGetComponent<PreferredSpawnTerrain>(entity, out var preferredTiles);
         if (preferredTiles is null)
         {
@@ -53,22 +54,41 @@ internal class SpawnSystem(Layout level) : ISystem
             return;
         }
 
-        TryFindSpawnPosition(preferredTiles.Tiles, out var position);
-        if (position is null)
+        TryFindSpawnPosition(preferredTiles.Tiles, out var point);
+        if (point is not {} position)
         {
             em.RemoveEntity(entity);
             return;
         }
+        
+        Point2D? forGuardian = null;
+        var possible = TileTools
+            .Neighbors(position)
+            .Where(p => level.GetObject(p) == null);
+        
+        foreach (var tile in possible)
+        {
+            forGuardian = tile;
+        }
+
+        if (forGuardian is {} forGuardianNonNull)
+        {
+            var guardian = EntityFactory.RequestGuardian(em);
+            em.SetComponent(guardian, new FollowedEntity(entity));
+            em.SetComponent(guardian, new Position(forGuardianNonNull.ToVector2()));
+        }
 
         _caravanSpawned = true;
-        em.SetComponent(entity, position);
-        GD.Print($"Spawn caravan {entity} at {position.Coordinates}");
+        em.SetComponent(entity, new Position(position.ToVector2()));
+        GD.Print($"Spawn caravan {entity} at {position}");
     }
 
     private void TryFindSpawnPosition(
         ImmutableHashSet<TerrainId> preferredTiles,
-        out Position? position)
+        out Point2D? position)
     {
+        position = null;
+        
         var startX = _random.Next(0, level.Width);
         var startY = _random.Next(0, level.Height);
 
@@ -78,10 +98,8 @@ internal class SpawnSystem(Layout level) : ISystem
         {
             var point = new Point2D(x, y);
             if (level.GetTerrain(point) != tile) continue;
-            position = new Position(point.ToVector2());
+            position = point;
             return;
         }
-
-        position = null;
     }
 }

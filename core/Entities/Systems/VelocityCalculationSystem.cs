@@ -5,7 +5,8 @@ namespace CaravansCore.Entities.Systems;
 
 internal class VelocityCalculationSystem : ISystem
 {
-    private readonly HashSet<Type> _requiredComponentTypes = [typeof(Direction), typeof(Abilities)];
+    private readonly HashSet<Type> _requiredComponentTypes =
+        [typeof(Direction), typeof(Abilities)];
 
     public void Update(EntityManager em, float deltaTime)
     {

@@ -6,15 +6,12 @@ namespace CaravansView.Entities;
 
 internal class EntityProvider
 {
-    private readonly Dictionary<EntityId, PackedScene> _entityIdToScene = [];
-
-    internal EntityProvider()
+    private readonly Dictionary<EntityId, PackedScene> _entityIdToScene = new()
     {
-        _entityIdToScene.Add(EntityId.Player,
-            GD.Load<PackedScene>("res://Entities/Player/Player.tscn"));
-        _entityIdToScene.Add(EntityId.Caravan,
-            GD.Load<PackedScene>("res://Entities/Caravan/Caravan.tscn"));
-    }
+        [EntityId.Player] = GD.Load<PackedScene>("res://Entities/Player/Player.tscn"),
+        [EntityId.Caravan] = GD.Load<PackedScene>("res://Entities/Caravan/Caravan.tscn"),
+        [EntityId.Guardian] = GD.Load<PackedScene>("res://Entities/Guardian/Guardian.tscn"),
+    };
 
     internal Node2D Provide(EntityId id)
     {
