@@ -45,6 +45,6 @@ public class AttackEntityGoalSystem : ISystem
     private static void Chase(EntityManager em, Entity entity, Vector2 position, Vector2 targetPosition)
     {
         em.SetComponent(entity, new TargetPosition(targetPosition));
-        em.SetComponent(entity, new Moving());
+        em.SetComponent(entity, new MoveIntent());
     }
 }

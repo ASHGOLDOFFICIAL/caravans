@@ -1,3 +1,3 @@
 namespace CaravansCore.Entities.Components;
 
-public record Moving : IComponent;
+public record MoveIntent : IComponent;

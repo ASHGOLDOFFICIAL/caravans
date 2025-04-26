@@ -6,7 +6,7 @@ namespace CaravansCore.Entities.Systems;
 internal class VelocityCalculationSystem : ISystem
 {
     private readonly List<Type> _requiredComponentTypes =
-        [typeof(Moving), typeof(Direction), typeof(Abilities)];
+        [typeof(MoveIntent), typeof(Direction), typeof(Abilities)];
 
     public void Update(EntityManager em, float deltaTime)
     {
@@ -18,7 +18,7 @@ internal class VelocityCalculationSystem : ISystem
 
             var velocity = CalculateVelocity(direction, abilities, deltaTime);
             em.SetComponent(entity, velocity);
-            em.RemoveComponent<Moving>(entity);
+            em.RemoveComponent<MoveIntent>(entity);
         }
 
         foreach (var (player, submitted) in em.GetAllEntitiesWith<PlayerSubmittedPosition>())

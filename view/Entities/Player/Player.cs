@@ -14,7 +14,7 @@ internal partial class Player : CharacterBody2D, IEntityScene
         [Direction4.Up] = "up"
     };
 
-    [Export] private AnimatedSprite2D _animatedSprite;
+    [Export] private AnimatedSprite2D _animation;
 
     private Direction4 _direction;
 
@@ -34,9 +34,9 @@ internal partial class Player : CharacterBody2D, IEntityScene
     private void ChooseAnimation()
     {
         if (GetVelocity() != Vector2.Zero)
-            _animatedSprite.Play("walk_" + _directionString[_direction]);
+            _animation.Play("walk_" + _directionString[_direction]);
         else
-            _animatedSprite.Play("idle_" + _directionString[_direction]);
+            _animation.Play("idle_" + _directionString[_direction]);
     }
 
     private void UpdateDirection(Vector2 velocity)

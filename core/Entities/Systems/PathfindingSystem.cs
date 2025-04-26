@@ -43,7 +43,7 @@ internal class PathfindingSystem(Layout level) : ISystem
             var direction = ChooseDirection(position, path);
             em.SetComponent(entity, new Direction(direction));
             em.SetComponent(entity, new Rotation(direction));
-            em.SetComponent(entity, new Moving());
+            em.SetComponent(entity, new MoveIntent());
         }
     }
 
