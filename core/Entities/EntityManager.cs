@@ -25,29 +25,39 @@ public class EntityManager
         }
     }
 
-    internal void TryGetComponent<T>(Entity entity, out T? component) where T : IComponent
+    internal bool TryGetComponent<T>(Entity entity, out T? component) where T : IComponent
     {
         if (!_entities.Contains(entity))
         {
             component = default;
-            return;
+            return false;
         }
 
         _components.TryGetValue(typeof(T), out var entities);
         if (entities is null)
         {
             component = default;
-            return;
+            return false;
         }
 
         entities.TryGetValue(entity.Uuid, out var value);
         if (value is null)
         {
             component = default;
-            return;
+            return false;
         }
 
         component = (T)value;
+        return true;
+    }
+
+    internal T GetComponentOrSet<T>(Entity entity, T ifAbsent) where T : IComponent
+    {
+        TryGetComponent<T>(entity, out var component);
+        if (component is not null) return component;
+        
+        SetComponent(entity, ifAbsent);
+        return ifAbsent;
     }
 
     internal void SetComponent<T>(Entity entity, T component) where T : IComponent

@@ -47,6 +47,7 @@ internal partial class InputController : Node2D
 
         if (Input.IsActionJustPressed(PrimeAction))
         {
+            Controller.Attack();
             Controller.RemoveObject(selectedTile);
         }
         else if (Input.IsActionJustPressed(SecondAction))

@@ -1,3 +1,3 @@
 namespace CaravansCore.Entities.Components;
 
-public record NeedsFollowTarget : IComponent;
+public record Moving : IComponent;

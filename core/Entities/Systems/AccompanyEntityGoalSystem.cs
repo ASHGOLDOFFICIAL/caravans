@@ -1,10 +1,11 @@
 using System.Numerics;
 using CaravansCore.Entities.Components;
 using CaravansCore.Entities.Components.Types;
+using Vector2 = System.Numerics.Vector2;
 
 namespace CaravansCore.Entities.Systems;
 
-public class AccompanyEntitySystem : ISystem
+public class AccompanyEntityGoalSystem : ISystem
 {
     private readonly List<Type> _requiredComponentTypes =
         [typeof(CurrentGoal), typeof(AccompanyTarget), typeof(Position)];
@@ -15,10 +16,10 @@ public class AccompanyEntitySystem : ISystem
         {
             var goal = (CurrentGoal)components[typeof(CurrentGoal)];
             if (goal.Goal != GoalType.AccompanyEntity) continue;
-            
+
             var target = (AccompanyTarget)components[typeof(AccompanyTarget)];
             var position = (Position)components[typeof(Position)];
-            
+
             em.TryGetComponent<Position>(target.Entity, out var targetPosition);
             if (targetPosition is null) continue;
             
@@ -31,7 +32,7 @@ public class AccompanyEntitySystem : ISystem
     {
         em.TryGetComponent<Direction>(target, out var targetDirection);
         if (targetDirection is null) return Vector2.Zero;
-        var rotation = Matrix3x2.CreateRotation((float)Math.PI / 2);
+        var rotation = Matrix3x2.CreateRotation(2);
         return Vector2.Transform(Vector2.Normalize(targetDirection.Vector), rotation);
     }
 }

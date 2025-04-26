@@ -46,7 +46,7 @@ internal class AdjacentTilesProvider : INeighborProvider
     }
 }
 
-internal class Pathfinder(ImmutableHashSet<TerrainId>? allowed)
+internal class TileBasedPathfinder(ImmutableHashSet<TerrainId>? allowed)
 {
     public IEnumerable<Point2D> FindPath(Layout level, Point2D start, Point2D end)
     {

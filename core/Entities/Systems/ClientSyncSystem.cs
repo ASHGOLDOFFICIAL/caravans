@@ -72,10 +72,20 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
         if (position is null) return null;
         em.TryGetComponent<EntityType>(entity, out var id);
         if (id is null) return null;
+        em.TryGetComponent<Health>(entity, out var health);
+        if (health is null) return null;
 
         em.TryGetComponent<Abilities>(entity, out var abilities);
         em.TryGetComponent<Rotation>(entity, out var rotation);
-        var snapshot = new EntitySnapshot(id.Id, entity.Uuid, position.Coordinates, rotation?.Direction, abilities?.Speed);
+        var snapshot = new EntitySnapshot(
+            id.Id,
+            entity.Uuid,
+            health.Current,
+            health.Max,
+            position.Coordinates, 
+            rotation?.Direction,
+            abilities?.Speed
+            );
         return snapshot;
     }
 }

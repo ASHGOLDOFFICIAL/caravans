@@ -19,9 +19,15 @@ public class PlayerController
         _controlledPlayer = player;
     }
 
+    public void Attack()
+    {
+        _level.EntityManager.SetComponent(_controlledPlayer, new AttackIntent());
+    }
+
     public void MovePlayer(Vector2 direction)
     {
         _level.EntityManager.SetComponent(_controlledPlayer, new PlayerSubmittedPosition(direction));
+        _level.EntityManager.SetComponent(_controlledPlayer, new Rotation(direction));
     }
 
     public void RemoveObject(Point2D position)

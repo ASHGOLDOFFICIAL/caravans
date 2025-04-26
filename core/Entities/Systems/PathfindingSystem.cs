@@ -10,7 +10,7 @@ namespace CaravansCore.Entities.Systems;
 
 internal class PathfindingSystem(Layout level) : ISystem
 {
-    private readonly Pathfinder _allAllowedPathfinder = new(null);
+    private readonly TileBasedPathfinder _allAllowedTileBasedPathfinder = new(null);
     private readonly List<Type> _requiredComponentTypes = [typeof(Position), typeof(TargetPosition)];
 
     public void Update(EntityManager em, float deltaTime)
@@ -43,6 +43,7 @@ internal class PathfindingSystem(Layout level) : ISystem
             var direction = ChooseDirection(position, path);
             em.SetComponent(entity, new Direction(direction));
             em.SetComponent(entity, new Rotation(direction));
+            em.SetComponent(entity, new Moving());
         }
     }
 
@@ -54,8 +55,8 @@ internal class PathfindingSystem(Layout level) : ISystem
 
         em.TryGetComponent<PathPreference>(entity, out var preference);
         var path = preference is null
-            ? _allAllowedPathfinder.FindPath(level, start, end)
-            : new Pathfinder(preference.Tiles).FindPath(level, start, end);
+            ? _allAllowedTileBasedPathfinder.FindPath(level, start, end)
+            : new TileBasedPathfinder(preference.Tiles).FindPath(level, start, end);
         return new Path(ImmutableQueue.CreateRange(path));
     }
 

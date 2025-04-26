@@ -1,7 +1,6 @@
 using System.Timers;
 using CaravansCore.Entities;
 using CaravansCore.Entities.Systems;
-using Godot;
 using Timer = System.Timers.Timer;
 
 namespace CaravansCore;
@@ -22,8 +21,11 @@ internal class GameTickController(GameServer server)
     private readonly Timer _timer = new(Interval);
     private readonly VelocityApplicationSystem _velocityApplicationSystem = new();
     private readonly VelocityCalculationSystem _velocityCalculationSystem = new();
-    private readonly AccompanyEntitySystem _accompanyEntitySystem = new();
-    private readonly AttackEntitySystem _attackEntitySystem = new();
+    private readonly AccompanyEntityGoalSystem _accompanyEntityGoalSystem = new();
+    private readonly AttackEntityGoalSystem _attackEntityGoalSystem = new();
+    private readonly WeaponSystem _weaponSystem = new();
+    private readonly DamageSystem _damageSystem = new();
+    private readonly DeathSystem _deathSystem = new();
     private DateTime _lastSignalTime;
 
     public void Start()
@@ -43,15 +45,21 @@ internal class GameTickController(GameServer server)
         _visualSensingSystem.Update(_entityManager, delta);
         // Determine course of action based on environment
         _goalSelectionSystem.Update(_entityManager, delta);
-        
+
         // Chose target if needed
         _targetPositionSelectionSystem.Update(_entityManager, delta);
-        // Follow entity
-        _attackEntitySystem.Update(_entityManager, delta);
         // Accompany entity
-        _accompanyEntitySystem.Update(_entityManager, delta);
+        _accompanyEntityGoalSystem.Update(_entityManager, delta);
+        // Chase entity for an attack
+        _attackEntityGoalSystem.Update(_entityManager, delta);
         // Find path to target
         _pathfindingSystem.Update(_entityManager, delta);
+        // Process weapon attacks
+        _weaponSystem.Update(_entityManager, delta);
+        // Apply damages
+        _damageSystem.Update(_entityManager, delta);
+        // Process died entites
+        _deathSystem.Update(_entityManager, delta);
 
         // Calculate velocity
         _velocityCalculationSystem.Update(_entityManager, delta);

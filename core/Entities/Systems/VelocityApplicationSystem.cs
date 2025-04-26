@@ -1,3 +1,4 @@
+using System.Numerics;
 using CaravansCore.Entities.Components;
 
 namespace CaravansCore.Entities.Systems;
@@ -13,11 +14,11 @@ public class VelocityApplicationSystem : ISystem
         {
             var position = (Position)components[typeof(Position)];
             var velocity = (Velocity)components[typeof(Velocity)];
+            if (velocity.Vector == Vector2.Zero) continue;
 
             var newPosition = new Position(position.Coordinates + velocity.Vector);
             em.SetComponent(entity, newPosition);
             em.RemoveComponent<Velocity>(entity);
-            em.RemoveComponent<Direction>(entity);
         }
     }
 }

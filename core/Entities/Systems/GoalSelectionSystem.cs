@@ -1,6 +1,5 @@
 using CaravansCore.Entities.Components;
 using CaravansCore.Entities.Components.Types;
-using Godot;
 
 namespace CaravansCore.Entities.Systems;
 
@@ -28,13 +27,12 @@ public class GoalSelectionSystem : ISystem
             _ => false
         };
     }
-    
+
     private static bool TryAccompanyEntity(EntityManager em, Entity entity)
     {
         em.TryGetComponent<AccompanyTarget>(entity, out var target);
         if (target is null) return false;
         em.SetComponent(entity, new CurrentGoal(GoalType.AccompanyEntity));
-        GD.Print($"Accompany {entity.Uuid} -> {target.Entity.Uuid}");
         return true;
     }
 
@@ -53,7 +51,6 @@ public class GoalSelectionSystem : ISystem
             
             em.SetComponent(entity, new AttackTarget(seen));
             em.SetComponent(entity, new CurrentGoal(GoalType.AttackEntity));
-            GD.Print($"Attack {entity.Uuid} -> {seen.Uuid}");
             return true;
         }
 

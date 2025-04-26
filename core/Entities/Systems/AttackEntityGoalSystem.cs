@@ -1,9 +1,10 @@
 using CaravansCore.Entities.Components;
 using CaravansCore.Entities.Components.Types;
+using Vector2 = System.Numerics.Vector2;
 
 namespace CaravansCore.Entities.Systems;
 
-public class AttackEntitySystem : ISystem
+public class AttackEntityGoalSystem : ISystem
 {
     private readonly List<Type> _requiredComponentTypes =
         [typeof(CurrentGoal), typeof(AttackTarget), typeof(Position)];
@@ -20,8 +21,30 @@ public class AttackEntitySystem : ISystem
             
             em.TryGetComponent<Position>(target.Entity, out var targetPosition);
             if (targetPosition is null) continue;
-            
-            em.SetComponent(entity, new Direction(targetPosition.Coordinates - position.Coordinates));
+
+            if (!InRange(position.Coordinates, targetPosition.Coordinates))
+            {
+                Chase(em, entity, position.Coordinates, targetPosition.Coordinates);
+                continue;
+            }
+
+            Attack(em, entity);
         }
+    }
+
+    private static bool InRange(Vector2 position, Vector2 targetPosition)
+    {
+        return Vector2.DistanceSquared(position, targetPosition) <= 1;
+    }
+
+    private static void Attack(EntityManager em, Entity entity)
+    {
+        em.SetComponent(entity, new AttackIntent());
+    }
+
+    private static void Chase(EntityManager em, Entity entity, Vector2 position, Vector2 targetPosition)
+    {
+        em.SetComponent(entity, new TargetPosition(targetPosition));
+        em.SetComponent(entity, new Moving());
     }
 }

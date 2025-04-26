@@ -6,6 +6,8 @@ namespace CaravansCore.Networking;
 public readonly record struct EntitySnapshot(
     EntityId Id,
     Guid Uuid,
+    int CurrentHealth,
+    int MaxHealth,
     Vector2 Position,
     Vector2? Rotation,
     int? Speed
