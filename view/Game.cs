@@ -24,6 +24,9 @@ internal partial class Game : Node, IClient
 
         if (snapshot.World is { } world)
             _levelScene.SubmitWorldSnapshot(world);
+
+        if (snapshot.Died is { } died)
+            _levelScene.SubmitDied(died);
     }
 
     public override void _Ready()

@@ -21,6 +21,8 @@ internal partial class Level : Node2D
     private readonly Queue<PlayerSnapshot> _playerSnapshots = [];
     private readonly Dictionary<Node2D, Guid> _uuids = [];
     private readonly Queue<WorldSnapshot> _worldSnapshots = [];
+    private readonly Queue<Guid> _died = [];
+    
     [Export] private TileMapLayer _objectLayer;
 
     [Export] private Player _player;
@@ -41,6 +43,10 @@ internal partial class Level : Node2D
 
         if (_worldSnapshots.TryDequeue(out var worldSnapshot))
             SetupLevel(worldSnapshot);
+
+        if (_died.Count <= 0) return;
+        _died.TryDequeue(out var uuid);
+        if (uuid != Guid.Empty) RemoveEntity(uuid);
     }
 
     internal void SubmitPlayerSnapshot(PlayerSnapshot playerSnapshot)
@@ -51,6 +57,14 @@ internal partial class Level : Node2D
     internal void SubmitWorldSnapshot(WorldSnapshot snapshot)
     {
         _worldSnapshots.Enqueue(snapshot);
+    }
+    
+    internal void SubmitDied(Guid[] died)
+    {
+        foreach (var entity in died)
+        {
+            _died.Enqueue(entity);
+        }
     }
 
     internal Guid GetEntityGuid(Node2D scene)
@@ -103,6 +117,15 @@ internal partial class Level : Node2D
         _entities.Add(info.Uuid, instance);
         if (_uuids.TryAdd(instance, info.Uuid))
             CallDeferred(Node.MethodName.AddChild, instance);
+    }
+
+    private void RemoveEntity(Guid uuid)
+    {
+        _entities.TryGetValue(uuid, out var scene);
+        if (scene is null) return;
+        _entities.Remove(uuid);
+        _uuids.Remove(scene);
+        scene.QueueFree();
     }
 
     private void SetupTerrainLayer(WorldSnapshot world)
