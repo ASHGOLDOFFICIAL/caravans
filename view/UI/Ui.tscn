@@ -1,12 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://crd637q00ed0x"]
+[gd_scene load_steps=4 format=3 uid="uid://crd637q00ed0x"]
 
-[ext_resource type="Script" uid="uid://cr5r3hte1mfv2" path="res://UI/InGamePlayerUi.cs" id="1_jkt3n"]
+[ext_resource type="Script" uid="uid://cr5r3hte1mfv2" path="res://UI/Ui.cs" id="1_jkt3n"]
 [ext_resource type="LabelSettings" uid="uid://bfps51at5iokr" path="res://UI/LabelSettings.tres" id="2_bkktq"]
+[ext_resource type="PackedScene" uid="uid://c5t6t8xw2bpby" path="res://UI/DeathScreen.tscn" id="3_w7kyx"]
 
-[node name="InGamePlayerUi" type="CanvasLayer" node_paths=PackedStringArray("_scoreLabel", "_healthLabel")]
+[node name="Ui" type="CanvasLayer" node_paths=PackedStringArray("_deathScreen", "_healthLabel", "_scoreLabel")]
 script = ExtResource("1_jkt3n")
-_scoreLabel = NodePath("Score")
+_deathScreen = NodePath("DeathScreen")
 _healthLabel = NodePath("Health")
+_scoreLabel = NodePath("Score")
 
 [node name="Score" type="Label" parent="."]
 anchors_preset = -1
@@ -14,6 +16,7 @@ anchor_left = 0.05
 anchor_top = 0.1
 anchor_right = 0.1
 anchor_bottom = 0.1
+text = "Score: {}"
 label_settings = ExtResource("2_bkktq")
 
 [node name="Health" type="Label" parent="."]
@@ -24,5 +27,9 @@ anchor_right = 0.05
 anchor_bottom = 0.8
 offset_right = 40.0
 offset_bottom = 23.0
+text = "Health: {}"
 label_settings = ExtResource("2_bkktq")
 vertical_alignment = 1
+
+[node name="DeathScreen" parent="." instance=ExtResource("3_w7kyx")]
+visible = false

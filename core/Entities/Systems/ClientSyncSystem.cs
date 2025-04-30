@@ -29,9 +29,10 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
         Entity client,
         bool initial = false)
     {
-        var playerSnapshot = BuildPlayerSnapshot(em, client);
+        var died = GetDiedEntities(em);
+        var playerSnapshot = BuildPlayerSnapshot(em, client, died.Contains(client.Uuid));
         var worldSnapshot = BuildWorldSnapshot(em, initial);
-        var snapshot = new Snapshot(playerSnapshot, worldSnapshot, GetDiedEntities(em));
+        var snapshot = new Snapshot(playerSnapshot, worldSnapshot, died);
         return snapshot;
     }
 
@@ -40,14 +41,14 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
         return em.GetAllEntitiesWith<Death>().Select(en => en.Item1.Uuid).ToArray();
     }
 
-    private static PlayerSnapshot? BuildPlayerSnapshot(EntityManager em, Entity client)
+    private static PlayerSnapshot? BuildPlayerSnapshot(EntityManager em, Entity client, bool dead)
     {
         var snapshot = BuildEntitySnapshot(em, client);
         em.TryGetComponent<Score>(client, out var scoreComponent);
         var score = scoreComponent ?? new Score(0);
 
         if (snapshot is { } nonNullSnapshot)
-            return new PlayerSnapshot(nonNullSnapshot, score.Value);
+            return new PlayerSnapshot(nonNullSnapshot, score.Value, dead);
         return null;
     }
 

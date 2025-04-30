@@ -12,14 +12,16 @@ internal partial class Game : Node, IClient
 
     [Export] private InputController _inputController;
     [Export] private Level _levelScene;
-    [Export] private InGamePlayerUi _playerUi;
+    [Export] private Ui _playerUi;
 
     public void Receive(Snapshot snapshot)
     {
         if (snapshot.Player is { } player)
         {
             _levelScene.SubmitPlayerSnapshot(player);
+            GD.Print("ok");
             _playerUi.Update(player);
+            GD.Print("not ok");
         }
 
         if (snapshot.World is { } world)

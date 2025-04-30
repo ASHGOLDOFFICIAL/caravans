@@ -4,10 +4,10 @@
 [ext_resource type="TileSet" uid="uid://7slorupj8qtx" path="res://Levels/Assets/terrain.tres" id="2_24c1m"]
 [ext_resource type="TileSet" uid="uid://dqsi46h84exn2" path="res://Levels/Assets/objects.tres" id="3_wbw1h"]
 
-[node name="Level" type="Node2D" node_paths=PackedStringArray("_terrainLayer", "_objectLayer")]
+[node name="Level" type="Node2D" node_paths=PackedStringArray("_objectLayer", "_terrainLayer")]
 script = ExtResource("1_q1cbv")
-_terrainLayer = NodePath("Terrain")
 _objectLayer = NodePath("Objects")
+_terrainLayer = NodePath("Terrain")
 
 [node name="Terrain" type="TileMapLayer" parent="."]
 tile_set = ExtResource("2_24c1m")

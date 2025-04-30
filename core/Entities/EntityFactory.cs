@@ -19,7 +19,7 @@ public class EntityFactory
         manager.SetComponent(entity, new CollisionBox(0.5f, 0.5f));
         
         manager.SetComponent(entity, new Cooldown(0.5f));
-        manager.SetComponent(entity, new Health(200));
+        manager.SetComponent(entity, new Health(20));
         manager.SetComponent(entity, new Score(0));
         
         manager.SetComponent(entity, new PlayerConnection(clientId));
