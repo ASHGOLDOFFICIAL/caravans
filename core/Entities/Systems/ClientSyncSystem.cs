@@ -31,8 +31,13 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
     {
         var playerSnapshot = BuildPlayerSnapshot(em, client);
         var worldSnapshot = BuildWorldSnapshot(em, initial);
-        var snapshot = new Snapshot(playerSnapshot, worldSnapshot);
+        var snapshot = new Snapshot(playerSnapshot, worldSnapshot, GetDiedEntities(em));
         return snapshot;
+    }
+
+    private Guid[] GetDiedEntities(EntityManager em)
+    {
+        return em.GetAllEntitiesWith<Death>().Select(en => en.Item1.Uuid).ToArray();
     }
 
     private static PlayerSnapshot? BuildPlayerSnapshot(EntityManager em, Entity client)

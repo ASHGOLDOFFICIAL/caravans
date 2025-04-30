@@ -18,10 +18,11 @@ public class DamageSystem : ISystem
             var total = damages.Value
                 .Aggregate(0, (current, damage) => current + damage.Amount);
             em.SetComponent(entity, health.Damage(total));
+            var killer = damages.Value.Last().From;
             
             if (!health.IsAlive())
             {
-                em.SetComponent(entity, new Death());
+                em.SetComponent(entity, new Death(killer));
                 return;
             }
             

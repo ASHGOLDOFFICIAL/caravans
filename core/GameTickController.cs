@@ -26,6 +26,7 @@ internal class GameTickController(GameServer server)
     private readonly WeaponSystem _weaponSystem = new();
     private readonly DamageSystem _damageSystem = new();
     private readonly DeathSystem _deathSystem = new();
+    private readonly EntityDespawnSystem _entityDespawnSystem = new();
     private DateTime _lastSignalTime;
 
     public void Start()
@@ -58,7 +59,7 @@ internal class GameTickController(GameServer server)
         _weaponSystem.Update(_entityManager, delta);
         // Apply damages
         _damageSystem.Update(_entityManager, delta);
-        // Process died entites
+        // Process died entities
         _deathSystem.Update(_entityManager, delta);
 
         // Calculate velocity
@@ -74,5 +75,7 @@ internal class GameTickController(GameServer server)
         _interactionSystem.Update(_entityManager, delta);
         // Send world state to clients
         _clientSyncSystem.Update(_entityManager, delta);
+        // Remove all unnecessary entities
+        _entityDespawnSystem.Update(_entityManager, delta);
     }
 }

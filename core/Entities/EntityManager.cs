@@ -51,6 +51,16 @@ public class EntityManager
         return true;
     }
 
+    internal bool UpdateComponent<T>(Entity entity, Func<T, T> update) where T : IComponent
+    {
+        TryGetComponent<T>(entity, out var component);
+        if (component is null) return false;
+        
+        var newComponent = update(component);
+        SetComponent(entity, newComponent);
+        return true;
+    }
+
     internal T GetComponentOrSet<T>(Entity entity, T ifAbsent) where T : IComponent
     {
         TryGetComponent<T>(entity, out var component);

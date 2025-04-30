@@ -10,6 +10,7 @@ namespace CaravansCore.Entities.Systems;
 
 internal class SpawnSystem(Layout level) : ISystem
 {
+    private readonly EntityFactory _entityFactory = new();
     private const float SpawnInterval = 2f;
     private readonly Random _random = new();
     private readonly object _timeLock = new();
@@ -45,7 +46,7 @@ internal class SpawnSystem(Layout level) : ISystem
 
     private void SpawnCaravan(EntityManager em)
     {
-        var caravan = EntityFactory.RequestCaravan(em);
+        var caravan = _entityFactory.RequestCaravan(em);
         
         em.TryGetComponent<PreferredSpawnTerrain>(caravan, out var preferredTiles);
         if (preferredTiles is null)
@@ -67,7 +68,7 @@ internal class SpawnSystem(Layout level) : ISystem
         
         foreach (var tile in possible)
         {
-            var guardian = EntityFactory.RequestGuardian(em);
+            var guardian = _entityFactory.RequestGuardian(em);
             em.SetComponent(guardian, new AccompanyTarget(caravan));
             em.SetComponent(guardian, new Position(tile.ToVector2()));
             break;

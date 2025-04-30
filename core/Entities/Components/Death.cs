@@ -1,3 +1,3 @@
 namespace CaravansCore.Entities.Components;
 
-public record Death : IComponent;
+internal record Death(Entity? Killer) : IComponent;
