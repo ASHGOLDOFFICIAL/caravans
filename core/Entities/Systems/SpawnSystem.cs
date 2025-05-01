@@ -16,6 +16,7 @@ internal class SpawnSystem(Layout level) : ISystem
     private readonly object _timeLock = new();
     private bool _caravanSpawned;
     private float _timePassed;
+    private readonly Vector2 _spawnPoint = new(10, 15);
 
     public void Update(EntityManager em, float deltaTime)
     {
@@ -31,16 +32,31 @@ internal class SpawnSystem(Layout level) : ISystem
             SpawnCaravan(em);
     }
 
-    private static void SpawnPlayers(EntityManager em)
+    private void SpawnPlayers(EntityManager em)
     {
         foreach (var (entity, connection) in em.GetAllEntitiesWith<PlayerConnection>())
         {
+            if (connection.WantToRespawn)
+            {
+                em.UpdateComponent<PlayerConnection>(entity, 
+                    c => c with { WantToRespawn = false });
+                if (!em.RemoveComponent<Died>(entity))
+                    continue;
+                em.RemoveComponent<PlayerSubmittedPosition>(entity);
+                em.UpdateComponent<Health>(entity, h => h.Full());
+
+                em.SetComponent(entity, new Position(_spawnPoint));
+                GD.Print($"Respawn player {entity.Uuid} at {_spawnPoint}");
+                continue;
+            }
+
             if (connection.Spawned) continue;
             
-            em.SetComponent(entity, connection with { Spawned = true });
-            var position = new Position(new Vector2(10, 15));
-            em.SetComponent(entity, position);
-            GD.Print($"Spawn player {entity} at {position.Coordinates}");
+            em.UpdateComponent<PlayerConnection>(
+                entity, 
+                c => c with { Spawned = true });
+            em.SetComponent(entity, new Position(_spawnPoint));
+            GD.Print($"Spawn player {entity.Uuid} at {_spawnPoint}");
         }
     }
 

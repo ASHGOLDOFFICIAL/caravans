@@ -79,13 +79,12 @@ public class EntityManager
         _components[typeof(T)][entity.Uuid] = component;
     }
 
-    internal void RemoveComponent<T>(Entity entity) where T : IComponent
+    internal bool RemoveComponent<T>(Entity entity) where T : IComponent
     {
         if (!_entities.Contains(entity))
-            return;
-        var type = typeof(T);
-        _components.TryGetValue(type, out var forType);
-        forType?.Remove(entity.Uuid);
+            return false;
+        _components.TryGetValue(typeof(T), out var forType);
+        return forType is not null && forType.Remove(entity.Uuid);
     }
 
     internal IEnumerable<(Entity, T)> GetAllEntitiesWith<T>() where T : IComponent
@@ -127,7 +126,6 @@ public class EntityManager
         }
     }
 
-
     private IEnumerable<(Entity, object)> GetAllEntitiesWith(Type type)
     {
         _components.TryGetValue(type, out var entities);
@@ -143,10 +141,5 @@ public class EntityManager
         if (componentForType is null) return null;
         componentForType.TryGetValue(entity.Uuid, out var component);
         return component;
-    }
-
-    private bool HasComponent(Type type, Entity entity)
-    {
-        return _components.TryGetValue(type, out var map) && map.ContainsKey(entity.Uuid);
     }
 }

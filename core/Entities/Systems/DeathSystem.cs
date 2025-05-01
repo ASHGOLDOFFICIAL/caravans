@@ -4,14 +4,14 @@ namespace CaravansCore.Entities.Systems;
 
 public class DeathSystem : ISystem
 {
-    private readonly List<Type> _types = [ typeof(Death), typeof(Score) ];
+    private readonly List<Type> _types = [ typeof(Died), typeof(Score) ];
     
     public void Update(EntityManager em, float deltaTime)
     {
         foreach (var (_, components) in em.GetAllEntitiesWith(_types))
         {
             var score = (Score)components[typeof(Score)];
-            var death = (Death)components[typeof(Death)];
+            var death = (Died)components[typeof(Died)];
             var killer = death.Killer;
             if (killer is null) continue;
             

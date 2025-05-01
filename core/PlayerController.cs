@@ -19,6 +19,13 @@ public class PlayerController
         _controlledPlayer = player;
     }
 
+    public void Respawn()
+    {
+        _level.EntityManager.UpdateComponent<PlayerConnection>(
+            _controlledPlayer, 
+            c => c with { WantToRespawn = true });
+    }
+
     public void Attack()
     {
         _level.EntityManager.SetComponent(_controlledPlayer, new AttackIntent());

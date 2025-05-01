@@ -6,4 +6,7 @@
     <ItemGroup>
         <ProjectReference Include="..\core\CaravansCore.csproj"/>
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="BidirectionalDictionary" Version="1.3.0" />
+    </ItemGroup>
 </Project>

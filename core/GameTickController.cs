@@ -26,7 +26,7 @@ internal class GameTickController(GameServer server)
     private readonly WeaponSystem _weaponSystem = new();
     private readonly DamageSystem _damageSystem = new();
     private readonly DeathSystem _deathSystem = new();
-    private readonly EntityDespawnSystem _entityDespawnSystem = new();
+    private readonly DespawnSystem _despawnSystem = new();
     private DateTime _lastSignalTime;
 
     public void Start()
@@ -76,6 +76,6 @@ internal class GameTickController(GameServer server)
         // Send world state to clients
         _clientSyncSystem.Update(_entityManager, delta);
         // Remove all unnecessary entities
-        _entityDespawnSystem.Update(_entityManager, delta);
+        _despawnSystem.Update(_entityManager, delta);
     }
 }

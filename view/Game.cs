@@ -19,9 +19,7 @@ internal partial class Game : Node, IClient
         if (snapshot.Player is { } player)
         {
             _levelScene.SubmitPlayerSnapshot(player);
-            GD.Print("ok");
-            _playerUi.Update(player);
-            GD.Print("not ok");
+            _playerUi.SubmitPlayerSnapshot(player);
         }
 
         if (snapshot.World is { } world)

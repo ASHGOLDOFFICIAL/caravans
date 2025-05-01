@@ -38,7 +38,7 @@ internal class ClientSyncSystem(World level, Dictionary<Guid, IClient> clients) 
 
     private Guid[] GetDiedEntities(EntityManager em)
     {
-        return em.GetAllEntitiesWith<Death>().Select(en => en.Item1.Uuid).ToArray();
+        return em.GetAllEntitiesWith<Died>().Select(en => en.Item1.Uuid).ToArray();
     }
 
     private static PlayerSnapshot? BuildPlayerSnapshot(EntityManager em, Entity client, bool dead)

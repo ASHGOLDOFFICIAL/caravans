@@ -8,7 +8,7 @@
 
 [node name="Game" type="Node" node_paths=PackedStringArray("_inputController", "_levelScene", "_playerUi")]
 script = ExtResource("1_8ykrl")
-_inputController = NodePath("InputController")
+_inputController = NodePath("InGamePlayerUi/InputController")
 _levelScene = NodePath("Level")
 _playerUi = NodePath("InGamePlayerUi")
 
@@ -20,9 +20,10 @@ _player = NodePath("Player")
 [node name="Camera2D" type="Camera2D" parent="Level/Player"]
 zoom = Vector2(2, 2)
 
-[node name="InputController" type="Node2D" parent="." node_paths=PackedStringArray("_level", "_player")]
-script = ExtResource("5_t88pq")
-_level = NodePath("../Level")
-_player = NodePath("../Level/Player")
+[node name="InGamePlayerUi" parent="." node_paths=PackedStringArray("_inputController") instance=ExtResource("5_r0x5m")]
+_inputController = NodePath("InputController")
 
-[node name="InGamePlayerUi" parent="." instance=ExtResource("5_r0x5m")]
+[node name="InputController" type="Node2D" parent="InGamePlayerUi" node_paths=PackedStringArray("_level", "_player")]
+script = ExtResource("5_t88pq")
+_level = NodePath("../../Level")
+_player = NodePath("../../Level/Player")

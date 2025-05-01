@@ -22,7 +22,7 @@ public class DamageSystem : ISystem
             
             if (!health.IsAlive())
             {
-                em.SetComponent(entity, new Death(killer));
+                em.SetComponent(entity, new Died(killer));
                 return;
             }
             

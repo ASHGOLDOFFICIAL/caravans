@@ -13,67 +13,78 @@ namespace CaravansView.Levels;
 internal partial class Level : Node2D
 {
     private const int TileSize = 16;
-    private readonly object _bindingLock = new();
-    private readonly Dictionary<Guid, Node2D> _entities = [];
+
+    private readonly Queue<Guid> _died = [];
+    private readonly BidirectionalDictionary<Guid, Node2D> _entities = [];
+
     private readonly EntityProvider _entityProvider = new();
 
     private readonly object _layerSetupLock = new();
-    private readonly Queue<PlayerSnapshot> _playerSnapshots = [];
-    private readonly Dictionary<Node2D, Guid> _uuids = [];
     private readonly Queue<WorldSnapshot> _worldSnapshots = [];
-    private readonly Queue<Guid> _died = [];
-    
+    private (bool, PlayerSnapshot) _lastPlayerSnapshot = (false, default);
+
     [Export] private TileMapLayer _objectLayer;
 
     [Export] private Player _player;
+    private bool _playerBound;
     private Guid _playerGuid;
     private int _playerSpeed;
-
     [Export] private TileMapLayer _terrainLayer;
     private bool _terrainSet;
 
+    public override void _Ready()
+    {
+        RemoveChild(_player);
+    }
+
     public override void _Process(double delta)
     {
-        if (_playerSnapshots.TryDequeue(out var playerSnapshot))
-            lock (_bindingLock)
+        while (_died.TryDequeue(out var uuid))
+        {
+            if (uuid == _playerGuid)
             {
-                if (_playerGuid == Guid.Empty)
-                    BindPlayer(playerSnapshot);
+                if (IsAncestorOf(_player))
+                {
+                    _playerBound = false;
+                    RemoveChild(_player);
+                }
+                continue;
             }
+
+            RemoveEntity(uuid);
+        }
+
+        if (_lastPlayerSnapshot.Item1 && !_playerBound)
+            BindPlayer(_lastPlayerSnapshot.Item2);
 
         if (_worldSnapshots.TryDequeue(out var worldSnapshot))
             SetupLevel(worldSnapshot);
-
-        if (_died.Count <= 0) return;
-        _died.TryDequeue(out var uuid);
-        if (uuid != Guid.Empty) RemoveEntity(uuid);
     }
 
     internal void SubmitPlayerSnapshot(PlayerSnapshot playerSnapshot)
     {
-        _playerSnapshots.Enqueue(playerSnapshot);
+        _lastPlayerSnapshot = (true, playerSnapshot);
     }
 
     internal void SubmitWorldSnapshot(WorldSnapshot snapshot)
     {
         _worldSnapshots.Enqueue(snapshot);
     }
-    
+
     internal void SubmitDied(Guid[] died)
     {
         foreach (var entity in died)
-        {
             _died.Enqueue(entity);
-        }
     }
 
     internal Guid GetEntityGuid(Node2D scene)
     {
-        return _uuids[scene];
+        return _entities.Inverse.TryGetValue(scene, out var uuid) ? uuid : Guid.Empty;
     }
 
     internal void MovePlayer(Vector2 direction)
     {
+        if (!_playerBound) return;
         _player.Move(direction * _playerSpeed * TileSize);
     }
 
@@ -83,9 +94,9 @@ internal partial class Level : Node2D
         _playerSpeed = entity.Speed ?? 1;
         _playerGuid = entity.Uuid;
         _entities[entity.Uuid] = _player;
-        _uuids[_player] = entity.Uuid;
-        _player.CallDeferred(Node2D.MethodName.SetPosition,
-            GamePosition(Converter.ToGodotVector(entity.Position)));
+        _player.SetPosition(GamePosition(Converter.ToGodotVector(entity.Position)));
+        AddChild(_player);
+        _playerBound = true;
     }
 
     private void SetupLevel(WorldSnapshot world)
@@ -114,8 +125,7 @@ internal partial class Level : Node2D
         var instance = _entityProvider.Provide(info.Id);
         if (instance is null) return;
         instance.Position = GamePosition(Converter.ToGodotVector(info.Position));
-        _entities.Add(info.Uuid, instance);
-        if (_uuids.TryAdd(instance, info.Uuid))
+        if (_entities.TryAdd(info.Uuid, instance))
             CallDeferred(Node.MethodName.AddChild, instance);
     }
 
@@ -124,7 +134,6 @@ internal partial class Level : Node2D
         _entities.TryGetValue(uuid, out var scene);
         if (scene is null) return;
         _entities.Remove(uuid);
-        _uuids.Remove(scene);
         scene.QueueFree();
     }
 

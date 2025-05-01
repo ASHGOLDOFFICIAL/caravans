@@ -18,15 +18,33 @@ internal partial class InputController : Node2D
 
     private const string Collider = "collider";
 
+    private bool _disabled;
+
     [Export] private Level _level;
     [Export] private Player _player;
 
     internal PlayerController Controller { get; set; }
 
+    public void Enable()
+    {
+        _disabled = false;
+    }
+
+    public void Disable()
+    {
+        _disabled = true;
+    }
+
     public override void _Process(double delta)
     {
+        if (_disabled) return;
         ProcessMovementInput();
         ProcessMouseInput();
+    }
+
+    public void RequestRespawn()
+    {
+        Controller.Respawn();
     }
 
     private void ProcessMovementInput()
